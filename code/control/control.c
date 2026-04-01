@@ -32,7 +32,7 @@ void speed_get(void)
 {
     printf("left speed:%d, right speed:%d\r\n", motor_value.receive_left_speed_data, motor_value.receive_right_speed_data);
     // 读取 方向解码 脉冲数
-    ctrl_temp->encoder_count = -motor_value.receive_right_speed_data;
+    ctrl_temp->encoder_count = -motor_value.receive_left_speed_data;
 }
 
 //------------------------------------------------------------------------------
@@ -168,15 +168,32 @@ void Gyro_x_PID_Controller(float Pitch_Loop_Out)
         ctrl_pwm_out->steering_pwm_out = steering_right;
 
 }
+
 //------------------------------------------------------------------------------
 // 函数简介     舵机pdk（方向环）
 // 参数说明     无
 // 返回参数     无
 // 备注信息     v1.0
 //------------------------------------------------------------------------------
-void steering_pdk_calc(void)
+float Steering_Loop_error=0.0f;
+float Steering_Loop_error0=0.0f;
+float Steering_Loop_kp=34.1f;
+float Steering_Loop_kd=68.0f;
+float Steering_u=0.0f;
+void Steering_Loop_Controller(float Target_Yaw)
 {
+    Steering_Loop_error=imu_temp->yaw_integral-Target_Yaw;
 
+    Steering_u=Steering_Loop_kp*Steering_Loop_error+
+        Steering_Loop_kd*(Steering_Loop_error-Steering_Loop_error0);
+
+    Steering_Loop_error0=Steering_Loop_error;
+
+    if( Steering_u> 20.0f)
+       Steering_u=20.0f;
+
+   else if(Steering_u<-20.0f)
+       Steering_u=-20.0f;
 }
 
 //------------------------------------------------------------------------------

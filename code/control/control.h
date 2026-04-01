@@ -125,11 +125,14 @@ extern control_parameters_struct* ctrl_parameters;
 extern control_pwm_out_struct* ctrl_pwm_out;
 extern global_flag_struct* glb_flag;
 extern float Pitch_u;
+extern float Steering_u;
 extern small_device_value_struct motor_value;
 extern float Pitch_Loop_Kp;
 extern float Pitch_Loop_Kd;
 extern float Gyro_x_Loop_Kp;
 extern float Gyro_x_Loop_Kd;
+extern float Steering_Loop_kp;
+extern float Steering_Loop_kd;
 
 extern void speed_get(void);
 extern void lucheng_get(void);

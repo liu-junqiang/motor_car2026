@@ -26,11 +26,11 @@
 #define SMALL_DRIVER_RX                         (UART3_TX_P15_6)
 #define SMALL_DRIVER_TX                         (UART3_RX_P15_7)
 //-------------------¶æ»ú------------------
-#define steering_freq       (100)
+#define steering_freq       (120)
 #define steering_pwm        (ATOM0_CH1_P33_9)
-#define steering_right       (1700)
-#define steering_left       (350)
-#define steering_middle     (920)//middle900,left350,right1700
+#define steering_right       (2975)
+#define steering_left       (675)
+#define steering_middle     (1900)//middle1900,left675,right2975
 
 //-------------------°´¼ü------------------
 //¾ØÕó¼üÅÌ
