@@ -62,7 +62,7 @@ int core0_main(void)
         ips200_show_int(0,60,  ctrl_pwm_out->steering_pwm_delta,3);
         ips200_show_float(0, 80, Pitch_u, 3, 3);
         ips200_show_int(0, 100, ctrl_temp->encoder_count, 6);
-        ips200_show_int(0, 120, motor_value.receive_right_speed_data, 6);
+        ips200_show_int(0, 120, ctrl_temp->lucheng, 6);
 
 //       screen_show();
 

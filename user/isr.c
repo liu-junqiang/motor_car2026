@@ -50,15 +50,17 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
     speed_get();
     // 低通滤波
     low_pass_filter_calc();
+    //获取路程
+    lucheng_get();
     // 电机pid计算
    // motor_pid_calc();
     // 动态控制
- //   dynamic_ctrl();
+    //dynamic_ctrl();
    //pwm_set_duty(steering_pwm,steering_middle);
 
     //Pitch_PID_Controller(0);
-    pitch_pid_cnt();
-    Gyro_x_PID_Controller(Pitch_u);
+    //pitch_pid_cnt();
+    //Gyro_x_PID_Controller(Pitch_u);
     //Gyro_x_PID_Controller(0);
     // pwm输出
     pwm_out();

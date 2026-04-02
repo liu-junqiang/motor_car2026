@@ -209,7 +209,7 @@ void control_pwm_out_struct_init(void)
 {
     // µç»ú
     ctrl_pwm_out->motor_pwm_delta = 0;
-    ctrl_pwm_out->motor_pwm_out = 1000;
+    ctrl_pwm_out->motor_pwm_out = 0;
 
     // ¶æ»ú
     ctrl_pwm_out->steering_pwm_delta = 0;
