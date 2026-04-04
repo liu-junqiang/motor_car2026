@@ -53,6 +53,9 @@ int core0_main(void)
     //flash_read_parameters();
 
     cpu_wait_event_ready();         // 等待所有核心初始化完毕
+    glb_flag->Close_speed_enable = 0;
+    glb_flag->Offset_flag = 1;
+    glb_flag->yaw_flag=1;
     while (TRUE)
     {
         seekfree_assistant_control();
@@ -62,7 +65,7 @@ int core0_main(void)
         ips200_show_int(0,60,  ctrl_pwm_out->steering_pwm_delta,3);
         ips200_show_float(0, 80, Pitch_u, 3, 3);
         ips200_show_int(0, 100, ctrl_temp->encoder_count, 6);
-        ips200_show_int(0, 120, ctrl_temp->lucheng, 6);
+        ips200_show_int(0, 120, imu_temp->yaw_integral, 6);
 
 //       screen_show();
 

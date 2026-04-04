@@ -143,7 +143,7 @@ void control_speed_struct_init(void)
     ctrl_speed->close_speed_cross = 0;
     ctrl_speed->close_speed_island = 0;
 
-    ctrl_speed->open_speed_straight = 0;
+    ctrl_speed->open_speed_straight = 2000;
     ctrl_speed->open_speed_cross = 0;
     ctrl_speed->open_speed_island = 0;
 
@@ -239,7 +239,7 @@ void inertial_measurement_unit_parameters_struct_init(void)
 {
     imu_parameters->sampling_times = 200;
     imu_parameters->sampling_delay_time = 5;
-    imu_parameters->sampling_dt = 0.005f;
+    imu_parameters->sampling_dt = 0.002f;
     imu_parameters->sampling_data_delta = 0.015f;
 }
 
@@ -278,7 +278,7 @@ void timer_keyboard_struct_init(void)
 void global_flag_struct_init(void)
 {
     glb_flag->Offset_flag = 0;
-    glb_flag->Close_speed_enable = 1;
+    glb_flag->Close_speed_enable = 0;
     glb_flag->keyboard_scan_enable = 0;
     glb_flag->keyboard_timer_flag = 0;
     glb_flag->keyboard_long_press_flag = 0;

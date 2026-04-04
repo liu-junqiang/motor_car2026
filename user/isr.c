@@ -55,12 +55,12 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
     // 电机pid计算
    // motor_pid_calc();
     // 动态控制
-    //dynamic_ctrl();
+    dynamic_ctrl();
    //pwm_set_duty(steering_pwm,steering_middle);
 
     //Pitch_PID_Controller(0);
-    //pitch_pid_cnt();
-    //Gyro_x_PID_Controller(Pitch_u);
+    pitch_pid_cnt();
+    Gyro_x_PID_Controller(Pitch_u);
     //Gyro_x_PID_Controller(0);
     // pwm输出
     pwm_out();
@@ -73,9 +73,9 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)
     pit_clear_flag(CCU60_CH1);
     // 2ms
 //    // 积分获取偏航角
-//    yaw_integral_calc();
+    yaw_integral_calc();
 //    // 偏航角限幅（-360° ~ 360°）
-//    yaw_integral_handle_calc();
+    yaw_integral_handle_calc();
     Euler();//卡尔曼滤波
 }
 

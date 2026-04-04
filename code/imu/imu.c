@@ -87,9 +87,9 @@ void yaw_integral_calc(void)
 
         // ÒıÈëËÀÇø£¨ÂË²¨£©
         if(imu_temp->sampling_data > -imu_parameters->sampling_data_delta && imu_temp->sampling_data < imu_parameters->sampling_data_delta)
-            imu_temp->sampling_data -= 0;
+            imu_temp->sampling_data = 0;
         else
-            imu_temp->yaw_integral -= RAD_TO_ANGLE(imu_temp->sampling_data * imu_parameters->sampling_dt);
+            imu_temp->yaw_integral += RAD_TO_ANGLE(imu_temp->sampling_data * imu_parameters->sampling_dt);
     }
 }
 
@@ -101,9 +101,9 @@ void yaw_integral_calc(void)
 //------------------------------------------------------------------------------
 void yaw_integral_handle_calc(void)
 {
-    if(imu_temp->yaw_integral > 360.0f)
+    if(imu_temp->yaw_integral > 180.0f)
         imu_temp->yaw_integral -= 360;
-    else if(imu_temp->yaw_integral < -360.0f)
+    else if(imu_temp->yaw_integral < -180.0f)
         imu_temp->yaw_integral += 360;
 }
 

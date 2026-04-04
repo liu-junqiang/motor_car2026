@@ -36,7 +36,7 @@ void speed_get(void)
 }
 
 //------------------------------------------------------------------------------
-// 函数简介     路程获取        约57224个脉冲/m
+// 函数简介     路程获取        约49479个脉冲/m
 // 参数说明     无
 // 返回参数     无
 // 备注信息     v1.0    方向编码器
@@ -398,8 +398,8 @@ void small_driver_uart_init(void)
 void pwm_out(void)
 {
     // 舵机输出
-    pwm_set_duty(steering_pwm, steering_middle);
-    //pwm_set_duty(steering_pwm, ctrl_pwm_out->steering_pwm_out);
+    //pwm_set_duty(steering_pwm, steering_middle);
+    pwm_set_duty(steering_pwm, ctrl_pwm_out->steering_pwm_out);
     small_driver_set_duty(-ctrl_pwm_out->motor_pwm_out,-ctrl_pwm_out->motor_pwm_out);
     //small_driver_set_duty(0, 0);
     //pwm_set_duty(steering_pwm, 560);
