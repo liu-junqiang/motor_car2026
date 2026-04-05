@@ -177,15 +177,15 @@ void Gyro_x_PID_Controller(float Pitch_Loop_Out)
 //------------------------------------------------------------------------------
 float Steering_Loop_error=0.0f;
 float Steering_Loop_error0=0.0f;
-float Steering_Loop_kp=34.1f;
-float Steering_Loop_kd=68.0f;
+float Steering_Loop_kp=0.0f;
+float Steering_Loop_kd=0.7f;
 float Steering_u=0.0f;
 void Steering_Loop_Controller(float Target_Yaw)
 {
     Steering_Loop_error=imu_temp->yaw_integral-Target_Yaw;
 
-    Steering_u=Steering_Loop_kp*Steering_Loop_error+
-        Steering_Loop_kd*(Steering_Loop_error-Steering_Loop_error0);
+    Steering_u=-(Steering_Loop_kp*Steering_Loop_error+
+        Steering_Loop_kd*(Steering_Loop_error-Steering_Loop_error0));
 
     Steering_Loop_error0=Steering_Loop_error;
 
@@ -412,7 +412,18 @@ void pitch_pid_cnt(void)
     if(ptemp==4)
     {
         ptemp=0;
-        Pitch_PID_Controller(0);
+        Pitch_PID_Controller(Steering_u);
+    }
+
+}
+uint8_t  ptemp2=0.0f;
+void pdk_pid_cnt(void)
+{
+    ptemp2++;
+    if(ptemp2==8)
+    {
+        ptemp2=0;
+        Steering_Loop_Controller(0);
     }
 
 }

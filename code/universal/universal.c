@@ -26,7 +26,7 @@ void seekfree_assistant_oscilloscope_show_data(void)
     seekfree_assistant_oscilloscope_data.data[4] = (float)Q_gyro;
     seekfree_assistant_oscilloscope_data.data[5] = (float)R_angle;
     seekfree_assistant_oscilloscope_data.data[6] = (float)ctrl_pwm_out->motor_pwm_out;
-    seekfree_assistant_oscilloscope_data.data[7] = (float)ctrl_temp->encoder_speed;
+    seekfree_assistant_oscilloscope_data.data[7] = (float)Steering_u;//舵机输出值
 
 }
 
@@ -50,13 +50,13 @@ void seekfree_assistant_parameter_control(void)
 //            Q_gyro = seekfree_assistant_parameter[1];
 //            R_angle = seekfree_assistant_parameter[2];
             ctrl_parameters->motor_kp = seekfree_assistant_parameter[0];
-            ctrl_parameters->motor_ki = seekfree_assistant_parameter[1];
-            ctrl_parameters->motor_kd = seekfree_assistant_parameter[2];
+            Steering_Loop_kp = seekfree_assistant_parameter[1];
+            Steering_Loop_kd = seekfree_assistant_parameter[2];
             Pitch_Loop_Kp = seekfree_assistant_parameter[3];
             Pitch_Loop_Kd = seekfree_assistant_parameter[4];
             Gyro_x_Loop_Kp = seekfree_assistant_parameter[5];
             Gyro_x_Loop_Kd = seekfree_assistant_parameter[6];
-            ctrl_pwm_out->motor_pwm_out = seekfree_assistant_parameter[7]; //开环
+            ctrl_speed->open_speed_straight = seekfree_assistant_parameter[7]; //开环
            // ctrl_parameters->setspeed = seekfree_assistant_parameter[7];
         }
     }

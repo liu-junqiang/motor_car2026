@@ -82,7 +82,7 @@ void yaw_integral_calc(void)
         imu660ra_get_gyro();
 
         // 去零漂
-        imu_temp->sampling_data = imu660ra_gyro_z - imu_temp->gyro_integral_z;
+        imu_temp->sampling_data = imu660ra_gyro_z; //- imu_temp->gyro_integral_z;
         imu_temp->sampling_data = imu_temp->sampling_data * PI / 180 / 16.4f;
 
         // 引入死区（滤波）
@@ -147,7 +147,7 @@ void Euler(void) {
 
 
 //卡尔曼参数
-float Q_angle = 0.006;//越大对陀螺仪信任度越高
+float Q_angle = 0.002;//越大对陀螺仪信任度越高
 float Q_gyro = 0.002;//越大对加速度信任度越高0.001-0.005
 float R_angle = 3.0;//越大对陀螺仪信任度越高
 float dt = 0.002;//dt为kalman滤波器采样时间
