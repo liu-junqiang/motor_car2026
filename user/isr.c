@@ -53,7 +53,7 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
     //获取路程
     lucheng_get();
     // 电机pid计算
-   // motor_pid_calc();
+    motor_pid_calc();
     // 动态控制
     dynamic_ctrl();
    //pwm_set_duty(steering_pwm,steering_middle);

@@ -147,9 +147,9 @@ void Euler(void) {
 
 
 //卡尔曼参数
-float Q_angle = 0.002;//越大对陀螺仪信任度越高
-float Q_gyro = 0.002;//越大对加速度信任度越高0.001-0.005
-float R_angle = 3.0;//越大对陀螺仪信任度越高
+float Q_angle = 0.001;//越大对陀螺仪信任度越高
+float Q_gyro = 0.003;//越大对加速度信任度越高0.001-0.005
+float R_angle = 2.5;//越大对陀螺仪信任度越高
 float dt = 0.002;//dt为kalman滤波器采样时间
 char C_0 = 1;
 float Q_bias, Angle_err;

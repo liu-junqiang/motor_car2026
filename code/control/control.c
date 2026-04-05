@@ -136,8 +136,8 @@ void motor_pid_calc(void)
 //------------------------------------------------------------------------------
 float Pitch_Loop_error = 0.0f;//倾角误差
 float Pitch_Loop_error0 = 0.0f;//上次误差
-float Pitch_Loop_Kp = 20.8f;
-float Pitch_Loop_Kd = 39.4f;
+float Pitch_Loop_Kp = 16.3f;
+float Pitch_Loop_Kd = 1.5f;
 float Pitch_u = 0.0f;//期望角速度
 void Pitch_PID_Controller(float Error_Loop_Out)
 {
@@ -155,7 +155,7 @@ void Pitch_PID_Controller(float Error_Loop_Out)
 float Gyro_x_Loop_error = 0.0f;
 float Gyro_x_Loop_error0 = 0.0f;//上次误差
 float Gyro_x_Loop_Kp = 2.0f;
-float Gyro_x_Loop_Kd = 3.9f;
+float Gyro_x_Loop_Kd = 2.0f;
 void Gyro_x_PID_Controller(float Pitch_Loop_Out)
 {
     Gyro_x_Loop_error = Gyro_x - Pitch_Loop_Out ;
