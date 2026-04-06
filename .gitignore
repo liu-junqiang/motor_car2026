@@ -1,0 +1,11 @@
+#忽略的文件和文件夹
+.cproject
+.metadata/
+.project
+.settings/
+.vs/
+.vscode/
+Debug/
+Lcf_Tasking_Tricore_Tc.lsl
+*.bat
+*.txt
