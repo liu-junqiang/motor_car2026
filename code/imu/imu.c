@@ -117,7 +117,7 @@ float Angle_Z_Final;
 float zhou;
 float Gyro_x_temp;
 float Gyro_x_last=0;
-float Alpha=0.07f;//0-1,越大对加速度越信任
+float Alpha=0.05f;//0-1,越大对加速度越信任
 extern signed short  imu660ra_acc_y, imu660ra_acc_z;            //加速度传感器原始数据
 extern signed short imu660ra_gyro_x;         //陀螺仪原始数据
 
@@ -130,9 +130,9 @@ void Euler(void) {
     ay = imu660ra_acc_transition(imu660ra_acc_y);
     az = imu660ra_acc_transition(imu660ra_acc_z);
 
-    Gyro_x_temp = imu660ra_gyro_transition(imu660ra_gyro_x);//把陀螺仪读取到的角速度转换成实际角速度付给Gyro_x_temp
-        Gyro_x = Alpha * Gyro_x_temp + (1-Alpha) * Gyro_x_last;
-        Gyro_x_last = Gyro_x;
+    Gyro_x = imu660ra_gyro_transition(imu660ra_gyro_x);//把陀螺仪读取到的角速度转换成实际角速度付给Gyro_x_temp
+        //Gyro_x = Alpha * Gyro_x_temp + (1-Alpha) * Gyro_x_last;
+        //Gyro_x_last = Gyro_x;
 
         zhou=imu660ra_gyro_transition(imu660ra_gyro_x);//比较滤波效果
     //将 imu660ra 陀螺仪数据转换为实际物理数据，单位为°/s

@@ -143,7 +143,7 @@ void control_speed_struct_init(void)
     ctrl_speed->close_speed_cross = 0;
     ctrl_speed->close_speed_island = 0;
 
-    ctrl_speed->open_speed_straight = 1500;
+    ctrl_speed->open_speed_straight = 2000;
     //ctrl_speed->open_speed_straight = 0;
     ctrl_speed->open_speed_cross = 0;
     ctrl_speed->open_speed_island = 0;
@@ -238,7 +238,7 @@ void inertial_measurement_unit_temp_struct_init(void)
 //------------------------------------------------------------------------------
 void inertial_measurement_unit_parameters_struct_init(void)
 {
-    imu_parameters->sampling_times = 200;
+    imu_parameters->sampling_times = 100;
     imu_parameters->sampling_delay_time = 5;
     imu_parameters->sampling_dt = 0.0025f;
     imu_parameters->sampling_data_delta = 0.015f;

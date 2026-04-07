@@ -155,7 +155,7 @@ void Pitch_PID_Controller(float Error_Loop_Out)
 float Gyro_x_Loop_error = 0.0f;
 float Gyro_x_Loop_error0 = 0.0f;//…œ¥ŒŒÛ≤Ó
 float Gyro_x_Loop_Kp = 2.0f;
-float Gyro_x_Loop_Kd = 2.0f;
+float Gyro_x_Loop_Kd = 0.5f;
 void Gyro_x_PID_Controller(float Pitch_Loop_Out)
 {
     Gyro_x_Loop_error = Gyro_x - Pitch_Loop_Out ;
@@ -412,7 +412,7 @@ void pitch_pid_cnt(void)
     if(ptemp==4)
     {
         ptemp=0;
-        Pitch_PID_Controller(Steering_u);
+        Pitch_PID_Controller(0);
     }
 
 }
