@@ -48,7 +48,7 @@ int core0_main(void)
     // 初始化所有外设
     init_alldevice();
     // 陀螺仪零漂
-    //gesture_systematic_error_calc();
+    gesture_systematic_error_calc();
     // flash读取参数
     //flash_read_parameters();
 

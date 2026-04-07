@@ -17,8 +17,8 @@ uint32 parameter_arr[PARAMETER_ARR_LEN] = { 0 };
 void seekfree_assistant_oscilloscope_show_data(void)
 {
     seekfree_assistant_oscilloscope_send(&seekfree_assistant_oscilloscope_data);
-    //seekfree_assistant_oscilloscope_data.data[0] = (float)Pitch;
-    seekfree_assistant_oscilloscope_data.data[0] = (float)zhou;//显示原始值，方便判断滤波效果2
+    seekfree_assistant_oscilloscope_data.data[0] = (float)Pitch;
+    //seekfree_assistant_oscilloscope_data.data[0] = (float)zhou;//显示原始值，方便判断滤波效果2
     seekfree_assistant_oscilloscope_data.data[1] = (float)Gyro_x;//滤波后输出值
     seekfree_assistant_oscilloscope_data.data[2] = (float)Pitch_u;//外环输出值
    // seekfree_assistant_oscilloscope_data.data[3] = (float)Q_angle;

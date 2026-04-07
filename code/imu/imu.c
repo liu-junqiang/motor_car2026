@@ -82,7 +82,7 @@ void yaw_integral_calc(void)
         imu660ra_get_gyro();
 
         // 去零漂
-        imu_temp->sampling_data = imu660ra_gyro_z; //- imu_temp->gyro_integral_z;
+        imu_temp->sampling_data = imu660ra_gyro_z - imu_temp->gyro_integral_z;
         imu_temp->sampling_data = imu_temp->sampling_data * PI / 180 / 16.4f;
 
         // 引入死区（滤波）

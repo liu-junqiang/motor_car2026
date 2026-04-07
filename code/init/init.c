@@ -240,7 +240,7 @@ void inertial_measurement_unit_parameters_struct_init(void)
 {
     imu_parameters->sampling_times = 200;
     imu_parameters->sampling_delay_time = 5;
-    imu_parameters->sampling_dt = 0.002f;
+    imu_parameters->sampling_dt = 0.0025f;
     imu_parameters->sampling_data_delta = 0.015f;
 }
 
