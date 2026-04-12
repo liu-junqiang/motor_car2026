@@ -184,6 +184,16 @@ void Steering_Loop_Controller(float Target_Yaw)
 {
     Steering_Loop_error=imu_temp->yaw_integral-Target_Yaw;
 
+    //对误差限幅
+    if(Steering_Loop_error>190)
+    {
+        Steering_Loop_error = 360- Steering_Loop_error;
+    }
+    if(Steering_Loop_error<-190)
+    {
+        Steering_Loop_error = 360+ Steering_Loop_error;
+    }
+
     Steering_u=-(Steering_Loop_kp*Steering_Loop_error+
         Steering_Loop_kd*(Steering_Loop_error-Steering_Loop_error0));
 
@@ -428,4 +438,43 @@ void pdk_pid_cnt(void)
 
 }
 
+//------------------------------------------------------------------------------
+// 函数简介     科目一
+// 参数说明     无
+// 返回参数     无
+// 备注信息     v1.0
+//------------------------------------------------------------------------------
+enum sub1 kemu1;
+float yaw_target=0;
+uint64 sub1_sim=989580; //跑直线路程的脉冲数 20m
+void subject1(void)
+{
+    if(kemu1==road1)
+    {
+        yaw_target=0;
+    }
+    if(kemu1==road1 && ctrl_temp->lucheng >=sub1_sim)  //判断转弯
+    {
+        kemu1=road_circle;
+        ctrl_temp->lucheng = 0;
+    }
+    if(kemu1==road_circle)
+    {
+        yaw_target = 180;
+    }
+    if((imu_temp->yaw_integral>175||imu_temp->yaw_integral<-175) && kemu1==road_circle)//判断转弯结束
+    {
+        kemu1= road2;
+        ctrl_temp->lucheng=0;
+    }
+    if(kemu1==road2)
+    {
+        yaw_target = 180;
+    }
+    if(kemu1==road2 && ctrl_temp->lucheng >=sub1_sim) //科目一结束
+    {
+        ctrl_speed->open_speed_straight = 2000;
+    }
+
+}
 

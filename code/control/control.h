@@ -149,6 +149,12 @@ extern void small_driver_get_speed(void);                                  // 无
 extern void small_driver_uart_init(void);                                  // 无刷驱动 串口通讯初始化
 extern  void pitch_pid_cnt(void);
 
+enum sub1{
+    road1,
+    road_circle,
+    road2
+};
+extern enum sub1;
 
 
 #endif /* CODE_CONTROL_CONTROL_H_ */
