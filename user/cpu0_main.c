@@ -48,7 +48,7 @@ int core0_main(void)
     // 初始化所有外设
     init_alldevice();
     // 陀螺仪零漂
-   gesture_systematic_error_calc();
+   //gesture_systematic_error_calc();
     // flash读取参数
     //flash_read_parameters();
 
@@ -64,7 +64,7 @@ int core0_main(void)
         ips200_show_int(0,40, ctrl_pwm_out->steering_pwm_out,3);
         ips200_show_int(0,60,  ctrl_pwm_out->steering_pwm_delta,3);
         ips200_show_float(0, 80, Pitch_u, 3, 3);
-        ips200_show_int(0, 100, ctrl_temp->encoder_count, 6);
+        ips200_show_int(0, 100, ctrl_temp->lucheng, 6);
         ips200_show_int(0, 120, imu_temp->yaw_integral, 6);
 
 //       screen_show();

@@ -22,6 +22,9 @@ control_parameters_struct* ctrl_parameters = &control_parameters;
 control_pwm_out_struct* ctrl_pwm_out = &control_pwm_out;
 global_flag_struct* glb_flag = &global_flag;
 
+float yaw_target=0;
+
+
 //------------------------------------------------------------------------------
 // 函数简介     编码器读数
 // 参数说明     无
@@ -139,6 +142,12 @@ float Pitch_Loop_error0 = 0.0f;//上次误差
 float Pitch_Loop_Kp = 16.3f;
 float Pitch_Loop_Kd = 1.5f;
 float Pitch_u = 0.0f;//期望角速度
+
+//float Pitch_Loop_error = 0.0f;//倾角误差
+//float Pitch_Loop_error0 = 0.0f;//上次误差
+//float Pitch_Loop_Kp = 25.3f;
+//float Pitch_Loop_Kd = 4.5f;
+//float Pitch_u = 0.0f;//期望角速度
 void Pitch_PID_Controller(float Error_Loop_Out)
 {
     Pitch_Loop_error = -Pitch + Error_Loop_Out ;
@@ -156,6 +165,11 @@ float Gyro_x_Loop_error = 0.0f;
 float Gyro_x_Loop_error0 = 0.0f;//上次误差
 float Gyro_x_Loop_Kp = 2.0f;
 float Gyro_x_Loop_Kd = 0.5f;
+
+//float Gyro_x_Loop_error = 0.0f;
+//float Gyro_x_Loop_error0 = 0.0f;//上次误差
+//float Gyro_x_Loop_Kp = 3.0f;
+//float Gyro_x_Loop_Kd = 0.5f;
 void Gyro_x_PID_Controller(float Pitch_Loop_Out)
 {
     Gyro_x_Loop_error = Gyro_x - Pitch_Loop_Out ;
@@ -177,8 +191,8 @@ void Gyro_x_PID_Controller(float Pitch_Loop_Out)
 //------------------------------------------------------------------------------
 float Steering_Loop_error=0.0f;
 float Steering_Loop_error0=0.0f;
-float Steering_Loop_kp=0.0f;
-float Steering_Loop_kd=0.7f;
+float Steering_Loop_kp=0.3f;
+float Steering_Loop_kd=0;
 float Steering_u=0.0f;
 void Steering_Loop_Controller(float Target_Yaw)
 {
@@ -200,10 +214,10 @@ void Steering_Loop_Controller(float Target_Yaw)
     Steering_Loop_error0=Steering_Loop_error;
 
     if( Steering_u> 20.0f)
-       Steering_u=20.0f;
+       Steering_u=3.0f;
 
    else if(Steering_u<-20.0f)
-       Steering_u=-20.0f;
+       Steering_u=-3.0f;
 }
 
 //------------------------------------------------------------------------------
@@ -410,10 +424,58 @@ void pwm_out(void)
     // 舵机输出
     //pwm_set_duty(steering_pwm, steering_middle);
     pwm_set_duty(steering_pwm, ctrl_pwm_out->steering_pwm_out);
+
     small_driver_set_duty(-ctrl_pwm_out->motor_pwm_out,-ctrl_pwm_out->motor_pwm_out);
     //small_driver_set_duty(0, 0);
     //pwm_set_duty(steering_pwm, 560);
+//    //倾倒判断
+//    if(Pitch>28||Pitch<-28)
+//    {
+//        pwm_set_duty(steering_pwm, steering_middle);
+//        small_driver_set_duty(0, 0);
+//    }
+
 }
+
+////------------------------------------------------------------------------------
+//// 函数简介     pwm输出(原地)
+//// 参数说明     无
+//// 返回参数     无
+//// 备注信息     v1.0
+////------------------------------------------------------------------------------
+//uint8_t time=0;
+//void pwm_out_yuan(void)
+//{
+//    // 舵机输出
+//    pwm_set_duty(steering_pwm, ctrl_pwm_out->steering_pwm_out);
+//
+//    //电机输出
+//
+//    if(time<=20)
+//    {
+//        small_driver_set_duty(-ctrl_pwm_out->motor_pwm_out,-ctrl_pwm_out->motor_pwm_out);
+//        time++;
+//    }
+//    if(time>20&&time<=40)
+//    {
+//        small_driver_set_duty(ctrl_pwm_out->motor_pwm_out,ctrl_pwm_out->motor_pwm_out);
+//        time++;
+//    }
+//    if(time>40)
+//    {
+//        time =0;
+//    }
+//
+//
+//
+//    //倾倒判断
+//    if(Pitch>28||Pitch<-28)
+//    {
+//        pwm_set_duty(steering_pwm, steering_middle);
+//        small_driver_set_duty(0, 0);
+//    }
+//
+//}
 
 uint8_t  ptemp=0.0f;
 void pitch_pid_cnt(void)
@@ -422,7 +484,7 @@ void pitch_pid_cnt(void)
     if(ptemp==4)
     {
         ptemp=0;
-        Pitch_PID_Controller(0);
+        Pitch_PID_Controller(Steering_u);
     }
 
 }
@@ -430,10 +492,11 @@ uint8_t  ptemp2=0.0f;
 void pdk_pid_cnt(void)
 {
     ptemp2++;
-    if(ptemp2==8)
+    if(ptemp2==10)
     {
         ptemp2=0;
-        Steering_Loop_Controller(0);
+        Steering_Loop_Controller(yaw_target);
+        //Steering_Loop_Controller(180);
     }
 
 }
@@ -444,9 +507,9 @@ void pdk_pid_cnt(void)
 // 返回参数     无
 // 备注信息     v1.0
 //------------------------------------------------------------------------------
-enum sub1 kemu1;
-float yaw_target=0;
-uint64 sub1_sim=989580; //跑直线路程的脉冲数 20m
+enum sub1 kemu1=road1;
+//uint64 sub1_sim=989580; //跑直线路程的脉冲数 20m
+uint64 sub1_sim=300000;
 void subject1(void)
 {
     if(kemu1==road1)
@@ -456,25 +519,41 @@ void subject1(void)
     if(kemu1==road1 && ctrl_temp->lucheng >=sub1_sim)  //判断转弯
     {
         kemu1=road_circle;
+        gpio_set_level(LED, GPIO_LOW);
         ctrl_temp->lucheng = 0;
     }
     if(kemu1==road_circle)
     {
         yaw_target = 180;
     }
-    if((imu_temp->yaw_integral>175||imu_temp->yaw_integral<-175) && kemu1==road_circle)//判断转弯结束
-    {
-        kemu1= road2;
-        ctrl_temp->lucheng=0;
-    }
-    if(kemu1==road2)
-    {
-        yaw_target = 180;
-    }
-    if(kemu1==road2 && ctrl_temp->lucheng >=sub1_sim) //科目一结束
-    {
-        ctrl_speed->open_speed_straight = 2000;
-    }
+//    if((imu_temp->yaw_integral>175||imu_temp->yaw_integral<-175) && kemu1==road_circle)//判断转弯结束
+//    {
+//        kemu1= road2;
+//        ctrl_temp->lucheng=0;
+//    }
+//    if(kemu1==road2)
+//    {
+//        yaw_target = 180;
+//    }
+//    if(kemu1==road2 && ctrl_temp->lucheng >=sub1_sim) //科目一结束
+//    {
+//        ctrl_speed->open_speed_straight = 0;
+//    }
 
 }
 
+//------------------------------------------------------------------------------
+// 函数简介     航位推算
+// 参数说明     无
+// 返回参数     无
+// 备注信息     v1.0 放在计算航向角的中断里
+//------------------------------------------------------------------------------
+float pos_now[2]={0};//(x,y)
+float pos_last[2]={0};
+void get_pos(void)
+{
+    pos_now[0] = pos_last[0] + (float)(1.0f * ctrl_temp->encoder_count)*sin(imu_temp->yaw_integral*(3.14/180));
+    pos_now[1] = pos_last[1] + (float)(1.0f * ctrl_temp->encoder_count)*sin(imu_temp->yaw_integral*(3.14/180));
+    pos_last[0]=pos_now[0];
+    pos_last[1]=pos_now[1];
+}

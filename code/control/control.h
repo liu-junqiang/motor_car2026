@@ -133,6 +133,7 @@ extern float Gyro_x_Loop_Kp;
 extern float Gyro_x_Loop_Kd;
 extern float Steering_Loop_kp;
 extern float Steering_Loop_kd;
+extern float yaw_target;
 
 extern void speed_get(void);
 extern void lucheng_get(void);
@@ -147,7 +148,9 @@ extern void uart_control_callback(void);                                   // 无
 extern void small_driver_set_duty(int16 left_duty, int16 right_duty);      // 无刷驱动 设置电机占空比
 extern void small_driver_get_speed(void);                                  // 无刷驱动 获取速度信息
 extern void small_driver_uart_init(void);                                  // 无刷驱动 串口通讯初始化
-extern  void pitch_pid_cnt(void);
+extern void pitch_pid_cnt(void);
+extern void pwm_out_yuan(void);
+extern void subject1(void);
 
 enum sub1{
     road1,
@@ -155,6 +158,7 @@ enum sub1{
     road2
 };
 extern enum sub1;
+
 
 
 #endif /* CODE_CONTROL_CONTROL_H_ */
