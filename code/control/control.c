@@ -24,6 +24,9 @@ global_flag_struct* glb_flag = &global_flag;
 
 float yaw_target=0;
 
+#define PATH_LENTH 50
+#define PI 3.1415926
+
 
 //------------------------------------------------------------------------------
 // 函数简介     编码器读数
@@ -549,11 +552,55 @@ void subject1(void)
 // 备注信息     v1.0 放在计算航向角的中断里
 //------------------------------------------------------------------------------
 float pos_now[2]={0};//(x,y)
-float pos_last[2]={0};
 void get_pos(void)
 {
-    pos_now[0] = pos_last[0] + (float)(1.0f * ctrl_temp->encoder_count)*sin(imu_temp->yaw_integral*(3.14/180));
-    pos_now[1] = pos_last[1] + (float)(1.0f * ctrl_temp->encoder_count)*sin(imu_temp->yaw_integral*(3.14/180));
-    pos_last[0]=pos_now[0];
-    pos_last[1]=pos_now[1];
+    pos_now[0] = pos_now[0] + (float)(1.0f * ctrl_temp->encoder_count)*sin(imu_temp->yaw_integral*(3.14/180));
+    pos_now[1] = pos_now[1] + (float)(1.0f * ctrl_temp->encoder_count)*sin(imu_temp->yaw_integral*(3.14/180));
+}
+
+//------------------------------------------------------------------------------
+// 函数简介     生成预设路径
+// 参数说明     无
+// 返回参数     无
+// 备注信息     v1.0
+//------------------------------------------------------------------------------
+float path[PATH_LENTH][2]={{0,0}};//(x,y)
+uint8_t half = PATH_LENTH/2;
+float dist1=1;
+float dist2=3;
+float R_turn=1.5;//路径半径
+void get_path(void)
+{
+    for (int i = 0; i < PATH_LENTH; i++)
+    {
+        //从左进入
+            if (i < half)
+            {
+                float t = (float)i / half * 2.0f * PI;
+                path[i][0] = -R_turn * sinf(t);
+                if(t<=PI)
+                {
+                    path[i][1] = dist1 - R_turn * cosf(t);
+                }
+                else
+                {
+                    path[i][1] = dist2 + R_turn * cosf(t);
+                }
+            }
+            else
+            {
+
+                float t = (float)(i - half) / half * 2.0f * PI;
+                path[i][0] = R_turn * sinf(t);
+                if(t<=PI)
+                {
+                    path[i][1] = dist2 + R_turn * cosf(t);
+                }
+                else
+                {
+                    path[i][1] = dist1 - R_turn * cosf(t);
+                }
+
+            }
+        }
 }

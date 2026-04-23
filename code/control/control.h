@@ -151,6 +151,7 @@ extern void small_driver_uart_init(void);                                  // нч
 extern void pitch_pid_cnt(void);
 extern void pwm_out_yuan(void);
 extern void subject1(void);
+extern void get_path(void);
 
 enum sub1{
     road1,
