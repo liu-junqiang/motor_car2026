@@ -134,6 +134,7 @@ extern float Gyro_x_Loop_Kd;
 extern float Steering_Loop_kp;
 extern float Steering_Loop_kd;
 extern float yaw_target;
+extern int last_idx;
 
 extern void speed_get(void);
 extern void lucheng_get(void);

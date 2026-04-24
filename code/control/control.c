@@ -549,17 +549,17 @@ void subject1(void)
 // 函数简介     航位推算
 // 参数说明     无
 // 返回参数     无
-// 备注信息     v1.0 放在计算航向角的中断里
+// 备注信息     v1.0
 //------------------------------------------------------------------------------
 float pos_now[2]={0};//(x,y)
 void get_pos(void)
 {
     pos_now[0] = pos_now[0] + (float)(1.0f * ctrl_temp->encoder_count)*sin(imu_temp->yaw_integral*(3.14/180));
-    pos_now[1] = pos_now[1] + (float)(1.0f * ctrl_temp->encoder_count)*sin(imu_temp->yaw_integral*(3.14/180));
+    pos_now[1] = pos_now[1] + (float)(1.0f * ctrl_temp->encoder_count)*cos(imu_temp->yaw_integral*(3.14/180));
 }
 
 //------------------------------------------------------------------------------
-// 函数简介     生成预设路径
+// 函数简介     生成科目二预设路径
 // 参数说明     无
 // 返回参数     无
 // 备注信息     v1.0
@@ -591,7 +591,7 @@ void get_path(void)
             {
 
                 float t = (float)(i - half) / half * 2.0f * PI;
-                path[i][0] = R_turn * sinf(t);
+                path[i][0] = -R_turn * sinf(t);
                 if(t<=PI)
                 {
                     path[i][1] = dist2 + R_turn * cosf(t);
@@ -603,4 +603,43 @@ void get_path(void)
 
             }
         }
+}
+
+//------------------------------------------------------------------------------
+// 函数简介     跟踪科目二预设路径
+// 参数说明     无
+// 返回参数     无
+// 备注信息     v1.0
+//------------------------------------------------------------------------------
+int last_idx=0;
+float L=0.2f;//单车轴距
+float LD=0.35f;//前瞻距离
+float Follow_path(int *last_idx)
+{
+    int target_idx = *last_idx;
+    for (int i = 0; i < PATH_LENTH; i++) {
+        int idx = (target_idx + i) % PATH_LENTH; // 循环搜索
+        float dist = sqrtf(powf(path[idx][0] - pos_now[0], 2) + powf(path[idx][1] - pos_now[1], 2));
+        if (dist >= LD) {
+            target_idx = idx;
+            break;
+        }
+    }
+    *last_idx = target_idx;
+
+    // 计算目标角度误差 alpha
+    float target_x = path[target_idx][0];
+    float target_y = path[target_idx][1];
+    float alpha = atan2f(target_x - pos_now[0], target_y - pos_now[1]) - imu_temp->yaw_integral;
+
+    //角度归一化
+    while (alpha > PI)  alpha -= 2 * PI;
+    while (alpha < -PI) alpha += 2 * PI;
+
+    return alpha;//返回目标yaw角
+
+//    //计算前轮转角 delta
+//    float delta = atan2f(2.0f * L * sinf(alpha), LD);
+//    return delta;
+
 }
