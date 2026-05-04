@@ -56,7 +56,8 @@
 
 #ifndef _zf_device_imu660rx_h_
 #define _zf_device_imu660rx_h_
-
+#include "zf_device_imu660rb.h"
+#include "zf_device_imu660ra.h"
 #include "zf_common_typedef.h"
 
 // IMU660RX_USE_SOFT_IIC定义为0表示使用硬件SPI驱动 定义为1表示使用软件IIC驱动
@@ -85,26 +86,46 @@
 
 //================================================定义 IMU660RX 内部地址================================================
 #define IMU660RX_DEV_ADDR           (0x6B)                                      // SA0接地：0x6B SA0上拉：0x69 模块默认上拉
+
 #define IMU660RX_SPI_W              (0x00)
 #define IMU660RX_SPI_R              (0x80)
 
-#define IMU660RX_CHIP_IDA            (0x00)                                     //660RAID
-#define IMU660RX_CHIP_IDB            (0x0F)                                     //660RBID
+#define IMU660RX_CHIP_IDA           (0x00)                                     //660RAID
+#define IMU660RX_CHIP_IDB           (0x0F)                                     //660RBID
 
 
 //================================================声明 IMU660RX 全局变量================================================
 extern int16 imu660rx_gyro_x, imu660rx_gyro_y, imu660rx_gyro_z;                   // 三轴陀螺仪数据      gyro (陀螺仪)
 extern int16 imu660rx_acc_x, imu660rx_acc_y, imu660rx_acc_z;                      // 三轴加速度计数据     acc (accelerometer 加速度计)
+extern float imu660rx_transition_factor[2];
 //================================================声明 IMU660RX 全局变量================================================
 
 
 //================================================声明 IMU660RX 基础函数================================================
 void  imu660rx_get_acc            (void);                                         // 获取 IMU660RX 加速度计数据
 void  imu660rx_get_gyro           (void);                                         // 获取 IMU660RX 陀螺仪数据
-float imu660rx_acc_transition     (int16 acc_value);                              // 将 IMU660RX 加速度计数据转换为实际物理数据
-float imu660rx_gyro_transition    (int16 gyro_value);                             // 将 IMU660RX 陀螺仪数据转换为实际物理数据
 uint8 imu660rx_init               (void);                                         // 初始化 IMU660RX
 //================================================声明 IMU660RX 基础函数================================================
+
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     将 IMU660RX 加速度计数据转换为实际物理数据
+// 参数说明     acc_value       任意轴的加速度计数据
+// 返回参数     void
+// 使用示例     float data = imu660ra_acc_transition(imu660ra_acc_x);           // 单位为 g(m/s^2)
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+#define imu660rx_acc_transition(acc_value)      ((float)(acc_value) / imu660rx_transition_factor[0])
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     将 IMU660RA 陀螺仪数据转换为实际物理数据
+// 参数说明     gyro_value      任意轴的陀螺仪数据
+// 返回参数     void
+// 使用示例     float data = imu660ra_gyro_transition(imu660ra_gyro_x);         // 单位为 °/s
+// 备注信息
+//-------------------------------------------------------------------------------------------------------------------
+#define imu660rx_gyro_transition(gyro_value)    ((float)(gyro_value) / imu660rx_transition_factor[1])
+
 
 
 #endif

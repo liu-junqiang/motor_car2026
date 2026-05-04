@@ -234,7 +234,7 @@ void wireless_uart_callback (void)
 uint8 wireless_uart_init (void)
 {
     uint8 return_state = 0;
-//    set_wireless_type(WIRELESS_UART, wireless_uart_callback);
+    set_wireless_type(WIRELESS_UART, wireless_uart_callback);
 
     fifo_init(&wireless_uart_fifo, FIFO_DATA_8BIT, wireless_uart_buffer, WIRELESS_UART_BUFFER_SIZE);
     gpio_init(WIRELESS_UART_RTS_PIN, GPI, GPIO_HIGH, GPI_PULL_UP);

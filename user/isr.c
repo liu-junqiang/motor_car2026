@@ -58,7 +58,7 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
     dynamic_ctrl();
    //pwm_set_duty(steering_pwm,steering_middle);
 
-    subject1();
+    //subject1();
 
     //Pitch_PID_Controller(0);
     pdk_pid_cnt();

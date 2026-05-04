@@ -55,7 +55,6 @@
 #include "zf_driver_soft_spi.h"
 #include "zf_driver_spi.h"
 #include "zf_device_type.h"
-#include "zf_device_config.h"
 #include "zf_device_ips200pro.h"
 
 #define IPS200PRO_SPI_LENGTH    ( 4096 )    // 每次SPI通讯最大长度 不可修改
@@ -64,101 +63,97 @@
 #define MAX_ID_PAGE             ( 30 )
 #define MAX_ID_LABEL            ( 50 )
 #define MAX_ID_TABLE            ( 20 )
-#define MAX_ID_METER            ( 10  )
+#define MAX_ID_METER            ( 10 )
 #define MAX_ID_CLOCK            ( 1  )
 #define MAX_ID_PROGRESS_BAR     ( 20 )
 #define MAX_ID_CALENDAR         ( 1  )
 #define MAX_ID_WAVEFORM         ( 5  )
+#define MAX_ID_WAVEFORM_LINE    ( 5  )
 #define MAX_ID_IMAGE            ( 5  )
 #define MAX_ID_IMAGE_LINE       ( 10 )
 #define MAX_ID_IMAGE_RECTANGLE  ( 5  )
+#define MAX_ID_CONTAINER        ( 20 )
 
 ips200pro_information_struct    ips200pro_information;
 ips200pro_time_struct           ips200pro_time;
-static uint8                    ips200pro_page_num = 0;
-static char                     ips200pro_printf_buffer[51];
-typedef enum
-{
-    IPS200PRO_PARAMETER_SET    		= 0x01,	// 设置系统参数命令
-    IPS200PRO_PARAMETER_GET,                // 获取系统参数命令
-    IPS200PRO_WIDGETS_PAGE     		= 0x10,	// 页面组件
-    IPS200PRO_WIDGETS_LABEL,                // 文本标签组件
-    IPS200PRO_WIDGETS_TABLE,                // 表格组件
-    IPS200PRO_WIDGETS_METER,                // 仪表组件
-    IPS200PRO_WIDGETS_CLOCK,                // 时钟组件
-    IPS200PRO_WIDGETS_BAR,                  // 进度条组件
-    IPS200PRO_WIDGETS_CALENDAR,             // 日历组件
-    IPS200PRO_WIDGETS_WAVEFORM,             // 波形组件
-    IPS200PRO_WIDGETS_IMAGE,                // 图像组件
-    IPS200PRO_WIDGETS_CONTAINER,            // 容器组件
-    IPS200PRO_WIDGETS_MAX,                  // 占位使用
-}ips200pro_command1_enum;
+
+static char ips200pro_printf_buffer[51];
+
+static uint8 ips200pro_lebel_num        = 0;
+static uint8 ips200pro_table_num        = 0;
+static uint8 ips200pro_meter_num        = 0;
+static uint8 ips200pro_clock_num        = 0;
+static uint8 ips200pro_progress_bar_num = 0;
+static uint8 ips200pro_waveform_num     = 0;
+static uint8 ips200pro_image_num        = 0;
+static uint8 ips200pro_container_num    = 0;
+static uint8 ips200pro_page_num         = 0;
 
 // 系统参数的子命令与屏幕组件的子命令
 typedef enum
 {
     // 可读可写的参数
     IPS200PRO_SYSTEM_DATE            = 0x01,// 系统日期
-    IPS200PRO_SYSTEM_TIME,         	        // 系统时间
-    IPS200PRO_SYSTEM_PARENT,               	// 父对象
-    IPS200PRO_SYSTEM_CODED_FORMAT,         	// 编码格式
-    IPS200PRO_SYSTEM_BACKLIGHT,            	// 背光亮度
-    IPS200PRO_SYSTEM_DIRECTION,            	// 屏幕显示方向
-    IPS200PRO_SYSTEM_CRC_STATE,            	// CRC使能状态
-    IPS200PRO_SYSTEM_FONT_SIZE,            	// 全局字体
+    IPS200PRO_SYSTEM_TIME,                  // 系统时间
+    IPS200PRO_SYSTEM_PARENT,                // 父对象
+    IPS200PRO_SYSTEM_CODED_FORMAT,          // 编码格式
+    IPS200PRO_SYSTEM_BACKLIGHT,             // 背光亮度
+    IPS200PRO_SYSTEM_DIRECTION,             // 屏幕显示方向
+    IPS200PRO_SYSTEM_CRC_STATE,             // CRC使能状态
+    IPS200PRO_SYSTEM_FONT_SIZE,             // 全局字体
     SCREEN_SYSTEM_OPTIMIZE,                 // 优化 目前仅针对图像进行优化(默认优化开启)
-    IPS200PRO_SYSTEM_THEME,                	// 系统主题
-    IPS200PRO_SYSTEM_SET_MAX,              	// 占位使用
+    IPS200PRO_SYSTEM_THEME,                 // 系统主题
+    IPS200PRO_SYSTEM_SET_MAX,               // 占位使用
 
     // 仅可读的参数
-    IPS200PRO_SYSTEM_INFORMATION   	= 0x10, // 屏幕ID编号、分辨率、固件版本
-    IPS200PRO_SYSTEM_FREE_STACK,           	// 系统空闲栈大小
-    IPS200PRO_SYSTEM_GET_MAX,              	// 占位使用
+    IPS200PRO_SYSTEM_INFORMATION    = 0x10, // 屏幕ID编号、分辨率、固件版本
+    IPS200PRO_SYSTEM_FREE_STACK,            // 系统空闲栈大小
+    IPS200PRO_SYSTEM_GET_MAX,               // 占位使用
 
     // 通用操作命令
-    IPS200PRO_COMMON_CREATE        	= 0x01, // 组件创建
-    IPS200PRO_COMMON_DELETE,               	// 组件删除
-    IPS200PRO_COMMON_FONT_SIZE,            	// 组件字体大小
-    IPS200PRO_COMMON_COLOR,                	// 组件颜色
-    IPS200PRO_COMMON_VALUE,                	// 组件数值 不同组件数据类型不同
-    IPS200PRO_COMMON_POSITION,             	// 组件位置
-    IPS200PRO_COMMON_HIDDEN,               	// 组件隐藏
-    IPS200PRO_COMMON_MAX,                  	// 占位
+    IPS200PRO_COMMON_CREATE         = 0x01, // 组件创建
+    IPS200PRO_COMMON_DELETE,                // 组件删除
+    IPS200PRO_COMMON_FONT_SIZE,             // 组件字体大小
+    IPS200PRO_COMMON_COLOR,                 // 组件颜色
+    IPS200PRO_COMMON_VALUE,                 // 组件数值 不同组件数据类型不同
+    IPS200PRO_COMMON_POSITION,              // 组件位置
+    IPS200PRO_COMMON_HIDDEN,                // 组件隐藏
+    IPS200PRO_COMMON_MAX,                   // 占位
 
     // PAGE组件专用命令
-    IPS200PRO_PAGE_SWITCH          	= 0x10, // 切换页面
-    IPS200PRO_PAGE_TITLE,                  	// 设置页面标题显示位置与宽度
+    IPS200PRO_PAGE_SWITCH           = 0x10, // 切换页面
+    IPS200PRO_PAGE_TITLE,                   // 设置页面标题显示位置与宽度
     IPS200PRO_PAGE_MAX,
 
     // LABEL组件专用命令
-    IPS200PRO_LABEL_LONG_MODE      	= 0x10, // 长文本模式
+    IPS200PRO_LABEL_LONG_MODE       = 0x10, // 长文本模式
     IPS200PRO_LABEL_MAX,
 
     // TABLE组件专用命令
-    IPS200PRO_TABLE_COL_WIDTH      	= 0x10, // 表格列宽度设置  行高由屏幕自动调整，无法设置
-    IPS200PRO_TABLE_SELECT,                	// 表格中单元格选中
+    IPS200PRO_TABLE_COL_WIDTH       = 0x10, // 表格列宽度设置  行高由屏幕自动调整，无法设置
+    IPS200PRO_TABLE_SELECT,                 // 表格中单元格选中
     IPS200PRO_TABLE_MAX,
 
     // WAVEFORM组件专用命令
-    IPS200PRO_WAVEFORM_LINE_STATE  	= 0x10, // 隐藏指定线条
-    IPS200PRO_WAVEFORM_LINE_TYPE,          	// 设置组件中线条的类型
-    IPS200PRO_WAVEFORM_CLEAR,              	// 将所有数据清空
+    IPS200PRO_WAVEFORM_LINE_STATE   = 0x10, // 隐藏指定线条
+    IPS200PRO_WAVEFORM_LINE_TYPE,           // 设置组件中线条的类型
+    IPS200PRO_WAVEFORM_CLEAR,               // 将所有数据清空
     IPS200PRO_WAVEFORM_MAX,
 
     // IMAGE组件专用命令
-    IPS200PRO_IMAGE_DRAW_LINE      	= 0x10, // 图像画线
-    IPS200PRO_IMAGE_DRAW_RECTANGLE,        	// 图像画框
+    IPS200PRO_IMAGE_DRAW_LINE       = 0x10, // 图像画线
+    IPS200PRO_IMAGE_DRAW_RECTANGLE,         // 图像画框
     IPS200PRO_IMAGE_MAX,
 }ips200pro_command2_enum;
 
 
 // 这里使用宏定义的方式，目的是为了避免使用匿名结构体，导致部分IDE无法在线调试的时候查看匿名结构体的数据
 #define IPS200PRO_HEADER   \
-    uint8   command1;                   	/* 命令1     */ \
-    uint8   command2;                   	/* 命令2     */ \
-    uint8   check_crc8;                 	/* CRC校验、默认未启用   */ \
-    uint8   widgets_id;                 	/* ID编号    */ \
-    uint32  length                      	/* 数据包长度 */ \
+    uint8   command1;                       /* 命令1     */ \
+    uint8   command2;                       /* 命令2     */ \
+    uint8   check_crc8;                     /* CRC校验、默认未启用   */ \
+    uint8   widgets_id;                     /* ID编号    */ \
+    uint32  length                          /* 数据包长度 */ \
 
 typedef struct
 {
@@ -168,10 +163,10 @@ typedef struct
 // 数据拆分联合体
 typedef union
 {
-    int8    int8_data[2];               	// 有符号字节数据
-    uint8   uint8_data[2];              	// 无符号字节数据
-    int16   int16_data;                 	// 有符号半字数据
-    uint16  uint16_data;                	// 无符号半字数据
+    int8    int8_data[2];                   // 有符号字节数据
+    uint8   uint8_data[2];                  // 无符号字节数据
+    int16   int16_data;                     // 有符号半字数据
+    uint16  uint16_data;                    // 无符号半字数据
 }data_split_union;
 
 
@@ -224,9 +219,9 @@ uint8 ips200pro_send_buffer(const void *buffer, uint32 length, uint32 time_out, 
 {
     uint8 return_state = 1;
 
-    if(     ((0 == time_out) || (0 == ips200pro_wait_idle(time_out)))  	// 等待未超时
-        &&  (IPS200PRO_SPI_LENGTH >= length)                           	// 数据量未超过限制
-        &&  (NULL != buffer))                                       	// 指针不为空
+    if(     ((0 == time_out) || (0 == ips200pro_wait_idle(time_out)))   // 等待未超时
+        &&  (IPS200PRO_SPI_LENGTH >= length)                            // 数据量未超过限制
+        &&  (NULL != buffer))                                           // 指针不为空
     {
         gpio_low(IPS200PRO_CS_PIN);
         ips200pro_write_8bit_data_spi_array((const uint8 *)buffer, length);
@@ -244,9 +239,9 @@ uint8 ips200pro_receive_buffer(void *buffer, uint32 length, uint32 time_out)
 {
     uint8 return_state = 1;
 
-    if(     ((0 == time_out) || (0 == ips200pro_wait_idle(time_out)))  	// 等待未超时
-        &&  (IPS200PRO_SPI_LENGTH >= length)                           	// 数据量未超过限制
-        &&  (NULL != buffer))                                       	// 指针不为空
+    if(     ((0 == time_out) || (0 == ips200pro_wait_idle(time_out)))   // 等待未超时
+        &&  (IPS200PRO_SPI_LENGTH >= length)                            // 数据量未超过限制
+        &&  (NULL != buffer))                                           // 指针不为空
     {
         gpio_low(IPS200PRO_CS_PIN);
         ips200pro_transfer_8bit_data_spi_array((const uint8 *)buffer, (uint8 *)buffer, length);
@@ -469,15 +464,6 @@ uint8 ips200pro_create_widgets(uint16 widgets_id, int16 x, int16 y, uint16 width
     return return_state;
 }
 
-uint8 ips200pro_delete_widgets(uint16 widgets_id)
-{
-    uint8 return_state;
-    ips200pro_header_struct temp;
-
-    return_state = ips200pro_write_packet(widgets_id >> 8, IPS200PRO_COMMON_DELETE, (uint8)widgets_id, (ips200pro_header_struct *)&temp, sizeof(temp), NULL, 0);
-    return return_state;
-}
-
 uint8 ips200pro_set_font(uint16 widgets_id, ips200pro_font_size_enum font_size)
 {
     uint8 return_state;
@@ -504,8 +490,8 @@ uint8 ips200pro_set_position(uint16 widgets_id, int16 x, int16 y)
     uint8 return_state;
     IPS200PRO_COMMON_STRUCT(temp, 2);
 
-    temp.data[0].int16_data    	= x;
-    temp.data[1].int16_data    	= y;
+    temp.data[0].int16_data     = x;
+    temp.data[1].int16_data     = y;
     return_state = ips200pro_write_packet(widgets_id >> 8, IPS200PRO_COMMON_POSITION, (uint8)widgets_id, (ips200pro_header_struct *)&temp, sizeof(temp), NULL, 0);
     return return_state;
 }
@@ -584,34 +570,33 @@ uint8 ips200pro_page_set_title_position_width(ips200pro_title_position_enum titl
 uint16 ips200pro_label_create(int16 x, int16 y, uint16 width, uint16 height)
 {
     uint8 return_state = 1;
-    static uint8 lebel_num = 0;
 
-    if(MAX_ID_LABEL > lebel_num)
+    if(MAX_ID_LABEL > ips200pro_lebel_num)
     {
-        return_state = ips200pro_create_widgets(++lebel_num | (IPS200PRO_WIDGETS_LABEL << 8), x, y, width, height);
+        return_state = ips200pro_create_widgets(++ips200pro_lebel_num | (IPS200PRO_WIDGETS_LABEL << 8), x, y, width, height);
         if(1 == return_state)
         {
-            lebel_num--;
+            ips200pro_lebel_num--;
         }
     }
-    return return_state == 1 ? 0 : (lebel_num | (IPS200PRO_WIDGETS_LABEL << 8));
+    return return_state == 1 ? 0 : (ips200pro_lebel_num | (IPS200PRO_WIDGETS_LABEL << 8));
 }
 
 uint8 ips200pro_label_printf(uint16 label_id, const char *format, ...)
 {
-	int32 str_length; 
+    int32 str_length;
     va_list arg;
     va_start(arg, format);
     uint8 return_state = 1;
     ips200pro_header_struct temp;
-	
-	str_length = vsnprintf(ips200pro_printf_buffer, sizeof(ips200pro_printf_buffer) - 1, format, arg);
-	if(0 <= str_length)
-	{
-		temp.length = (uint32)str_length;
-		return_state = ips200pro_write_packet(IPS200PRO_WIDGETS_LABEL, IPS200PRO_COMMON_VALUE, (uint8)label_id, (ips200pro_header_struct *)&temp, sizeof(temp), ips200pro_printf_buffer, temp.length);
-	}
-	va_end(arg);
+
+    str_length = vsnprintf(ips200pro_printf_buffer, sizeof(ips200pro_printf_buffer) - 1, format, arg);
+    if(0 <= str_length)
+    {
+        temp.length = (uint32)str_length;
+        return_state = ips200pro_write_packet(IPS200PRO_WIDGETS_LABEL, IPS200PRO_COMMON_VALUE, (uint8)label_id, (ips200pro_header_struct *)&temp, sizeof(temp), ips200pro_printf_buffer, temp.length);
+    }
+    va_end(arg);
 
     return return_state;
 }
@@ -641,36 +626,35 @@ uint8 ips200pro_label_mode(uint16 label_id, ips200pro_label_mode_enum mode)
 uint16 ips200pro_table_create(int16 x, int16 y, uint16 row_num, uint16 col_num)
 {
     uint8 return_state = 1;
-    static uint8 table_num = 0;
-    if(MAX_ID_TABLE > table_num)
+    if(MAX_ID_TABLE > ips200pro_table_num)
     {
-        return_state = ips200pro_create_widgets(++table_num | (IPS200PRO_WIDGETS_TABLE << 8), x, y, row_num, col_num);
+        return_state = ips200pro_create_widgets(++ips200pro_table_num | (IPS200PRO_WIDGETS_TABLE << 8), x, y, row_num, col_num);
         if(1 == return_state)
         {
-            table_num--;
+            ips200pro_table_num--;
         }
     }
-    return return_state == 1 ? 0 : (table_num | (IPS200PRO_WIDGETS_TABLE << 8));
+    return return_state == 1 ? 0 : (ips200pro_table_num | (IPS200PRO_WIDGETS_TABLE << 8));
 }
 
 uint8 ips200pro_table_cell_printf(uint16 table_id, uint8 row, uint8 col, char *format, ...)
 {
-	int32 str_length; 
+    int32 str_length;
     va_list arg;
     va_start(arg, format);
     uint8 return_state = 1;
     IPS200PRO_COMMON_STRUCT(temp, 2);
-	
-	str_length = vsnprintf(ips200pro_printf_buffer, sizeof(ips200pro_printf_buffer) - 1, format, arg);
-	if(0 <= str_length)
-	{
-		temp.length = (uint32)str_length;
-		temp.data[0].uint16_data	= row;
-		temp.data[1].uint16_data	= col;
-		return_state = ips200pro_write_packet(IPS200PRO_WIDGETS_TABLE, IPS200PRO_COMMON_VALUE, (uint8)table_id, (ips200pro_header_struct *)&temp, sizeof(temp), ips200pro_printf_buffer, temp.length);
-	}
-	va_end(arg);
-	
+
+    str_length = vsnprintf(ips200pro_printf_buffer, sizeof(ips200pro_printf_buffer) - 1, format, arg);
+    if(0 <= str_length)
+    {
+        temp.length = (uint32)str_length;
+        temp.data[0].uint16_data    = row;
+        temp.data[1].uint16_data    = col;
+        return_state = ips200pro_write_packet(IPS200PRO_WIDGETS_TABLE, IPS200PRO_COMMON_VALUE, (uint8)table_id, (ips200pro_header_struct *)&temp, sizeof(temp), ips200pro_printf_buffer, temp.length);
+    }
+    va_end(arg);
+
     return return_state;
 }
 
@@ -700,16 +684,15 @@ uint8 ips200pro_table_select(uint16 table_id, uint8 row, uint8 col)
 uint16 ips200pro_meter_create(int16 x, int16 y, uint16 size, ips200pro_meter_style_enum style)
 {
     uint8 return_state = 1;
-    static uint8 meter_num = 0;
-    if(MAX_ID_METER > meter_num)
+    if(MAX_ID_METER > ips200pro_meter_num)
     {
-        return_state = ips200pro_create_widgets(++meter_num | (IPS200PRO_WIDGETS_METER << 8), x, y, size, style);
+        return_state = ips200pro_create_widgets(++ips200pro_meter_num | (IPS200PRO_WIDGETS_METER << 8), x, y, size, style);
         if(1 == return_state)
         {
-            meter_num--;
+            ips200pro_meter_num--;
         }
     }
-    return return_state == 1 ? 0 : (meter_num | (IPS200PRO_WIDGETS_METER << 8));
+    return return_state == 1 ? 0 : (ips200pro_meter_num | (IPS200PRO_WIDGETS_METER << 8));
 }
 
 uint8 ips200pro_meter_set_value(uint16 meter_id, int16 value)
@@ -725,32 +708,30 @@ uint8 ips200pro_meter_set_value(uint16 meter_id, int16 value)
 uint16 ips200pro_clock_create(int16 x, int16 y, uint16 clock_size, ips200pro_clock_style_enum clock_type)
 {
     uint8 return_state = 1;
-    static uint8 clock_num = 0;
-    if(MAX_ID_CLOCK > clock_num)
+    if(MAX_ID_CLOCK > ips200pro_clock_num)
     {
-        return_state = ips200pro_create_widgets(++clock_num | (IPS200PRO_WIDGETS_CLOCK << 8), x, y, clock_size, clock_type);
+        return_state = ips200pro_create_widgets(++ips200pro_clock_num | (IPS200PRO_WIDGETS_CLOCK << 8), x, y, clock_size, clock_type);
         if(1 == return_state)
         {
-            clock_num--;
+            ips200pro_clock_num--;
         }
     }
-    return return_state == 1 ? 0 : (clock_num | (IPS200PRO_WIDGETS_CLOCK << 8));
+    return return_state == 1 ? 0 : (ips200pro_clock_num | (IPS200PRO_WIDGETS_CLOCK << 8));
 }
 
 
 uint16 ips200pro_progress_bar_create(int16 x, int16 y, uint16 width, uint16 height)
 {
     uint8 return_state = 1;
-    static uint8 progress_bar_num = 0;
-    if(MAX_ID_PROGRESS_BAR > progress_bar_num)
+    if(MAX_ID_PROGRESS_BAR > ips200pro_progress_bar_num)
     {
-        return_state = ips200pro_create_widgets(++progress_bar_num | (IPS200PRO_WIDGETS_BAR << 8), x, y, width, height);
+        return_state = ips200pro_create_widgets(++ips200pro_progress_bar_num | (IPS200PRO_WIDGETS_BAR << 8), x, y, width, height);
         if(1 == return_state)
         {
-            progress_bar_num--;
+            ips200pro_progress_bar_num--;
         }
     }
-    return return_state == 1 ? 0 : (progress_bar_num | (IPS200PRO_WIDGETS_BAR << 8));
+    return return_state == 1 ? 0 : (ips200pro_progress_bar_num | (IPS200PRO_WIDGETS_BAR << 8));
 }
 
 uint8 ips200pro_progress_bar_set_value(uint16 progress_bar_id, uint8 start_value, uint8 end_value)
@@ -787,37 +768,42 @@ uint8 ips200pro_calendar_display(uint16 year, uint8 month, ips200pro_calendar_mo
 uint16 ips200pro_waveform_create(int16 x, int16 y, uint16 width, uint16 height)
 {
     uint8 return_state = 1;
-    static uint8 waveform_num = 0;
-    if(MAX_ID_WAVEFORM > waveform_num)
+    if(MAX_ID_WAVEFORM > ips200pro_waveform_num)
     {
-        return_state = ips200pro_create_widgets(++waveform_num | (IPS200PRO_WIDGETS_WAVEFORM << 8), x, y, width, height);
+        return_state = ips200pro_create_widgets(++ips200pro_waveform_num | (IPS200PRO_WIDGETS_WAVEFORM << 8), x, y, width, height);
         if(1 == return_state)
         {
-            waveform_num--;
+            ips200pro_waveform_num--;
         }
     }
-    return return_state == 1 ? 0 : (waveform_num | (IPS200PRO_WIDGETS_WAVEFORM << 8));
+    return return_state == 1 ? 0 : (ips200pro_waveform_num | (IPS200PRO_WIDGETS_WAVEFORM << 8));
 }
 
 uint8 ips200pro_waveform_add_value(uint16 waveform_id, uint8 line_id, const uint16 *data, uint16 length, uint16 color)
 {
-    uint8 return_state;
-    IPS200PRO_COMMON_STRUCT(temp, 2);
+    uint8 return_state = 1;
+    if(MAX_ID_WAVEFORM_LINE > line_id - 1)
+    {
+        IPS200PRO_COMMON_STRUCT(temp, 2);
 
-    temp.data[0].uint16_data    = line_id;
-    temp.data[1].uint16_data    = color;
-    return_state = ips200pro_write_packet(IPS200PRO_WIDGETS_WAVEFORM, IPS200PRO_COMMON_VALUE, (uint8)waveform_id, (ips200pro_header_struct *)&temp, sizeof(temp), data, length * 2);
+        temp.data[0].uint16_data    = line_id;
+        temp.data[1].uint16_data    = color;
+        return_state = ips200pro_write_packet(IPS200PRO_WIDGETS_WAVEFORM, IPS200PRO_COMMON_VALUE, (uint8)waveform_id, (ips200pro_header_struct *)&temp, sizeof(temp), data, length * 2);
+    }
     return return_state;
 }
 
 uint8 ips200pro_waveform_line_state(uint16 waveform_id, uint16 line_id, uint16 line_state)
 {
-    uint8 return_state;
-    IPS200PRO_COMMON_STRUCT(temp, 2);
+    uint8 return_state = 1;
+    if(MAX_ID_WAVEFORM_LINE > line_id - 1)
+    {
+        IPS200PRO_COMMON_STRUCT(temp, 2);
 
-    temp.data[0].uint16_data    = line_id;
-    temp.data[1].uint16_data    = line_state;
-    return_state = ips200pro_write_packet(IPS200PRO_WIDGETS_WAVEFORM, IPS200PRO_WAVEFORM_LINE_STATE, (uint8)waveform_id, (ips200pro_header_struct *)&temp, sizeof(temp), NULL, 0);
+        temp.data[0].uint16_data    = line_id;
+        temp.data[1].uint16_data    = line_state;
+        return_state = ips200pro_write_packet(IPS200PRO_WIDGETS_WAVEFORM, IPS200PRO_WAVEFORM_LINE_STATE, (uint8)waveform_id, (ips200pro_header_struct *)&temp, sizeof(temp), NULL, 0);
+    }
     return return_state;
 }
 
@@ -843,16 +829,15 @@ uint8 ips200pro_waveform_clear(uint16 waveform_id)
 uint16 ips200pro_image_create(int16 x, int16 y, uint16 width, uint16 height)
 {
     uint8 return_state = 1;
-    static uint8 image_num = 0;
-    if(MAX_ID_IMAGE > image_num)
+    if(MAX_ID_IMAGE > ips200pro_image_num)
     {
-        return_state = ips200pro_create_widgets(++image_num | (IPS200PRO_WIDGETS_IMAGE << 8), x, y, width, height);
+        return_state = ips200pro_create_widgets(++ips200pro_image_num | (IPS200PRO_WIDGETS_IMAGE << 8), x, y, width, height);
         if(1 == return_state)
         {
-            image_num--;
+            ips200pro_image_num--;
         }
     }
-    return return_state == 1 ? 0 : (image_num | (IPS200PRO_WIDGETS_IMAGE << 8));
+    return return_state == 1 ? 0 : (ips200pro_image_num | (IPS200PRO_WIDGETS_IMAGE << 8));
 }
 
 uint8 ips200pro_image_display(uint16 image_id, const void *image, uint16 width, uint16 height, ips200pro_image_type_enum image_type, uint8 threshold)
@@ -930,16 +915,15 @@ uint8 ips200pro_image_draw_rectangle(uint16 image_id, uint8 rectangle_id, int16 
 uint16 ips200pro_container_create(int16 x, int16 y, uint16 width, uint16 height)
 {
     uint8 return_state = 1;
-    static uint8 container_num = 0;
-    if(MAX_ID_IMAGE_RECTANGLE > container_num)
+    if(MAX_ID_CONTAINER > ips200pro_container_num)
     {
-        return_state = ips200pro_create_widgets(++container_num | (IPS200PRO_WIDGETS_CONTAINER << 8), x, y, width, height);
+        return_state = ips200pro_create_widgets(++ips200pro_container_num | (IPS200PRO_WIDGETS_CONTAINER << 8), x, y, width, height);
         if(1 == return_state)
         {
-            container_num--;
+            ips200pro_container_num--;
         }
     }
-    return return_state == 1 ? 0 : (container_num | (IPS200PRO_WIDGETS_CONTAINER << 8));
+    return return_state == 1 ? 0 : (ips200pro_container_num | (IPS200PRO_WIDGETS_CONTAINER << 8));
 }
 
 uint8 ips200pro_container_radius(uint16 container_id, uint16 border_width, uint16 radius)
@@ -966,6 +950,16 @@ uint16 ips200pro_init(char *str, ips200pro_title_position_enum title_position, u
     system_delay_ms(5);
     gpio_set_level(IPS200PRO_RST_PIN, 1);
     system_delay_ms(20);
+
+    ips200pro_lebel_num        = 0;
+    ips200pro_table_num        = 0;
+    ips200pro_meter_num        = 0;
+    ips200pro_clock_num        = 0;
+    ips200pro_progress_bar_num = 0;
+    ips200pro_waveform_num     = 0;
+    ips200pro_image_num        = 0;
+    ips200pro_container_num    = 0;
+    ips200pro_page_num         = 0;
 
     // 某一些主板屏幕接口由于没有MISO引脚，所以无法读取屏幕信息
     // ips200pro_get_information(&ips200pro_information);

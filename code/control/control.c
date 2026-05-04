@@ -431,12 +431,12 @@ void pwm_out(void)
     small_driver_set_duty(-ctrl_pwm_out->motor_pwm_out,-ctrl_pwm_out->motor_pwm_out);
     //small_driver_set_duty(0, 0);
     //pwm_set_duty(steering_pwm, 560);
-//    //Çãµ¹ÅÐ¶Ï
-//    if(Pitch>28||Pitch<-28)
-//    {
-//        pwm_set_duty(steering_pwm, steering_middle);
-//        small_driver_set_duty(0, 0);
-//    }
+    //Çãµ¹ÅÐ¶Ï
+    if(Pitch>28||Pitch<-28)
+    {
+        pwm_set_duty(steering_pwm, steering_middle);
+        small_driver_set_duty(0, 0);
+    }
 
 }
 
@@ -498,8 +498,8 @@ void pdk_pid_cnt(void)
     if(ptemp2==10)
     {
         ptemp2=0;
-        Steering_Loop_Controller(yaw_target);
-        //Steering_Loop_Controller(180);
+        //Steering_Loop_Controller(yaw_target);
+        Steering_Loop_Controller(0);
     }
 
 }

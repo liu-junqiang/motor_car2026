@@ -74,149 +74,166 @@
 
 typedef enum
 {
+    IPS200PRO_PARAMETER_SET         = 0x01  ,                                   // 设置系统参数命令
+    IPS200PRO_PARAMETER_GET                 ,                                   // 获取系统参数命令
+    IPS200PRO_WIDGETS_PAGE          = 0x10  ,                                   // 页面组件
+    IPS200PRO_WIDGETS_LABEL                 ,                                   // 文本标签组件
+    IPS200PRO_WIDGETS_TABLE                 ,                                   // 表格组件
+    IPS200PRO_WIDGETS_METER                 ,                                   // 仪表组件
+    IPS200PRO_WIDGETS_CLOCK                 ,                                   // 时钟组件
+    IPS200PRO_WIDGETS_BAR                   ,                                   // 进度条组件
+    IPS200PRO_WIDGETS_CALENDAR              ,                                   // 日历组件
+    IPS200PRO_WIDGETS_WAVEFORM              ,                                   // 波形组件
+    IPS200PRO_WIDGETS_IMAGE                 ,                                   // 图像组件
+    IPS200PRO_WIDGETS_CONTAINER             ,                                   // 容器组件
+    IPS200PRO_WIDGETS_MAX                   ,                                   // 占位使用
+}ips200pro_command1_enum;
+
+typedef enum
+{
     // 仅16、20、24号字体支持中文显示，其余字体仅支持英文显示
-    FONT_SIZE_12,
-    FONT_SIZE_14,
-    FONT_SIZE_16,						    // 16字体支持中文显示
-    FONT_SIZE_18,					
-    FONT_SIZE_20,						    // 20字体支持中文显示
-    FONT_SIZE_22,					
-    FONT_SIZE_24,						    // 24字体支持中文显示
-    FONT_SIZE_26,
-    FONT_SIZE_28,
-    FONT_SIZE_30,
-    FONT_SIZE_32,
-    FONT_SIZE_34,
-    FONT_SIZE_36,
-    FONT_SIZE_40,
+    FONT_SIZE_12                            ,
+    FONT_SIZE_14                            ,
+    FONT_SIZE_16                            ,                                   // 16字体支持中文显示
+    FONT_SIZE_18                            ,
+    FONT_SIZE_20                            ,                                   // 20字体支持中文显示
+    FONT_SIZE_22                            ,
+    FONT_SIZE_24                            ,                                   // 24字体支持中文显示
+    FONT_SIZE_26                            ,
+    FONT_SIZE_28                            ,
+    FONT_SIZE_30                            ,
+    FONT_SIZE_32                            ,
+    FONT_SIZE_34                            ,
+    FONT_SIZE_36                            ,
+    FONT_SIZE_40                            ,
 }ips200pro_font_size_enum;
 
 typedef enum
 {
-    COLOR_FOREGROUND,                  	    // 前景色
-    COLOR_BACKGROUND,                  	    // 背景色      除IMAGE组件不支持其他都支持
-    COLOR_BORDER,                      	    // 组件边线颜色 支持组件有LABEL TABLE METER CLOCK CALENDAR CONTAINER
-		
+    COLOR_FOREGROUND                        ,                                   // 前景色      除 WAVEFORM CONTAINER 组件不支持其他都支持
+    COLOR_BACKGROUND                        ,                                   // 背景色      除 IMAGE 组件不支持其他都支持
+    COLOR_BORDER                            ,                                   // 组件边线颜色 支持组件有 LABEL TABLE METER CLOCK CALENDAR CONTAINER
+
     // 专用指令
-    COLOR_PAGE_SELECTED_TEXT,          	    // 选中页面后的标题文字颜色
-    COLOR_PAGE_SELECTED_BG,            	    // 选中页面后的标题背景颜色
-		
-    COLOR_TABLE_SELECTED_BG,           	    // 表格选中后的颜色
-		
-    COLOR_MRTER_INDICATOR,             	    // 仪表组件的指针颜色
-    COLOR_MRTER_TICKS,                 	    // 仪表组件刻度颜色
-		
-    COLOR_CLOCK_HOUR,                  	    // 圆形时钟时针颜色
-    COLOR_CLOCK_MINUTE,                	    // 圆形时钟分针颜色
-    COLOR_CLOCK_SECOND,                	    // 圆形时钟秒针颜色
-    COLOR_CLOCK_TICKS,                 	    // 圆形时钟组件刻度颜色
-		
-    COLOR_CALENDAR_YEAR,               	    // 年份颜色
-    COLOR_CALENDAR_WEEK,               	    // 星期颜色
-    COLOR_CALENDAR_TODAY,              	    // 今日颜色
-}ips200pro_widgets_color_type_enum;	
-	
+    COLOR_PAGE_SELECTED_TEXT                ,                                   // 选中页面后的标题文字颜色
+    COLOR_PAGE_SELECTED_BG                  ,                                   // 选中页面后的标题背景颜色
+
+    COLOR_TABLE_SELECTED_BG                 ,                                   // 表格选中后的颜色
+
+    COLOR_MRTER_INDICATOR                   ,                                   // 仪表组件的指针颜色
+    COLOR_MRTER_TICKS                       ,                                   // 仪表组件刻度颜色
+
+    COLOR_CLOCK_HOUR                        ,                                   // 圆形时钟时针颜色
+    COLOR_CLOCK_MINUTE                      ,                                   // 圆形时钟分针颜色
+    COLOR_CLOCK_SECOND                      ,                                   // 圆形时钟秒针颜色
+    COLOR_CLOCK_TICKS                       ,                                   // 圆形时钟组件刻度颜色
+
+    COLOR_CALENDAR_YEAR                     ,                                   // 年份颜色
+    COLOR_CALENDAR_WEEK                     ,                                   // 星期颜色
+    COLOR_CALENDAR_TODAY                    ,                                   // 今日颜色
+}ips200pro_widgets_color_type_enum;
+
 typedef enum
 {
-    PAGE_ANIM_OFF,                          // 页面切换时关闭动画效果
-    PAGE_ANIM_ON,                           // 页面切换时开启动画效果
+    PAGE_ANIM_OFF                           ,                                   // 页面切换时关闭动画效果
+    PAGE_ANIM_ON                            ,                                   // 页面切换时开启动画效果
 }ips200pro_page_animations_enum;
 
-typedef enum	
-{	
-    LABEL_AUTO,                        	    // 当宽度无法显示全部内容时，会自动换行显示
-    LABEL_DOT,                         	    // 当无法全部显示的时候，末尾右下角显示...
-    LABEL_SCROLL,                      	    // 当宽度无法显示全部内容时水平滚动显示，当高度无法显示全部内容时垂直滚动显示，只按照一个方向左右或者上下滚动显示，水平滚动优先
-    LABEL_SCROLL_CIRCULAR,             	    // 当宽度无法显示全部内容时水平滚动显示，当高度无法显示全部内容时垂直滚动显示，只按照一个方向循环滚动显示，水平滚动优先
-    LABEL_CLIP,                        	    // 将无法显示的内容裁剪掉
-}ips200pro_label_mode_enum;	
-	
-typedef enum	
-{	
-    IPS200PRO_PORTRAIT           = 0x01,    // 竖屏模式
-    IPS200PRO_PORTRAIT_180       = 0x02,	// 竖屏模式  旋转180
-    IPS200PRO_CROSSWISE          = 0x03,	// 横屏模式
-    IPS200PRO_CROSSWISE_180      = 0x04,	// 横屏模式  旋转180
-}ips200pro_display_direction_enum;	
-	
-typedef enum	
-{	
-    IPS200PRO_TITLE_LEFT         = 0x00,	// 页面标题显示在左侧 如果不需要显示标题，则将标题高度设置为0即可
-    IPS200PRO_TITLE_RIGHT        = 0x01,	// 页面标题显示在右侧
-    IPS200PRO_TITLE_TOP          = 0x02,	// 页面标题显示在上侧
-    IPS200PRO_TITLE_BOTTOM       = 0x03,	// 页面标题显示在底侧
-}ips200pro_title_position_enum;	
-	
-typedef enum	
-{	
-    IPS200PRO_CALENDAR_CHINESE   = 0x01,	// 日历使用中文显示  仅16、20、24号字体支持中文显示
-    IPS200PRO_CALENDAR_ENGLISH   = 0x02,	// 日历使用英文显示
+typedef enum
+{
+    LABEL_AUTO                              ,                                   // 当宽度无法显示全部内容时，会自动换行显示
+    LABEL_DOT                               ,                                   // 当无法全部显示的时候，末尾右下角显示...
+    LABEL_SCROLL                            ,                                   // 当宽度无法显示全部内容时水平滚动显示，当高度无法显示全部内容时垂直滚动显示，只按照一个方向左右或者上下滚动显示，水平滚动优先
+    LABEL_SCROLL_CIRCULAR                   ,                                   // 当宽度无法显示全部内容时水平滚动显示，当高度无法显示全部内容时垂直滚动显示，只按照一个方向循环滚动显示，水平滚动优先
+    LABEL_CLIP                              ,                                   // 将无法显示的内容裁剪掉
+}ips200pro_label_mode_enum;
+
+typedef enum
+{
+    IPS200PRO_PORTRAIT              = 0x01  ,                                   // 竖屏模式
+    IPS200PRO_PORTRAIT_180          = 0x02  ,                                   // 竖屏模式  旋转180
+    IPS200PRO_CROSSWISE             = 0x03  ,                                   // 横屏模式
+    IPS200PRO_CROSSWISE_180         = 0x04  ,                                   // 横屏模式  旋转180
+}ips200pro_display_direction_enum;
+
+typedef enum
+{
+    IPS200PRO_TITLE_LEFT            = 0x00  ,                                   // 页面标题显示在左侧 如果不需要显示标题，则将标题高度设置为0即可
+    IPS200PRO_TITLE_RIGHT           = 0x01  ,                                   // 页面标题显示在右侧
+    IPS200PRO_TITLE_TOP             = 0x02  ,                                   // 页面标题显示在上侧
+    IPS200PRO_TITLE_BOTTOM          = 0x03  ,                                   // 页面标题显示在底侧
+}ips200pro_title_position_enum;
+
+typedef enum
+{
+    IPS200PRO_CALENDAR_CHINESE      = 0x01  ,                                   // 日历使用中文显示  仅16、20、24号字体支持中文显示
+    IPS200PRO_CALENDAR_ENGLISH      = 0x02  ,                                   // 日历使用英文显示
 }ips200pro_calendar_mode_enum;
 
 typedef enum
 {
-    IMAGE_NULL                  = 0x00,     // 图像为空，用于纯边线显示
-    IMAGE_GRAYSCALE             = 0x03,	    // 灰度 总钻风、小钻风解压后的图像使用此枚举定义
-    IMAGE_RGB565,                      	    // RGB565彩色 凌瞳使用此枚举定义
+    IMAGE_NULL                      = 0x00  ,                                   // 图像为空，用于纯边线显示
+    IMAGE_GRAYSCALE                 = 0x03  ,                                   // 灰度 总钻风、小钻风解压后的图像使用此枚举定义
+    IMAGE_RGB565                            ,                                   // RGB565彩色 凌瞳使用此枚举定义
 }ips200pro_image_type_enum;
 
 typedef enum
 {
-    IMAGE_LINE_TYPE_UINT8       = 0x01,	    // 线条数据是8位类型
-    IMAGE_LINE_TYPE_UINT16      = 0x02,	    // 线条数据是16位类型
+    IMAGE_LINE_TYPE_UINT8           = 0x01  ,                                   // 线条数据是8位类型
+    IMAGE_LINE_TYPE_UINT16          = 0x02  ,                                   // 线条数据是16位类型
 }ips200pro_image_line_type_enum;
 
 typedef enum
 {
-    IPS200PRO_FORMAT_GBK         = 0x01,	// GBK编码，开源库默认的文件都是GBK编码
-    IPS200PRO_FORMAT_UTF8        = 0x02,	// UTF-8编码
+    IPS200PRO_FORMAT_GBK            = 0x01  ,                                   // GBK编码，开源库默认的文件都是GBK编码
+    IPS200PRO_FORMAT_UTF8           = 0x02  ,                                   // UTF-8编码
 }ips200pro_format_enum;
 
 typedef enum
 {
-    METER_ANGLE                 = 0x01,	    // 角度指示仪表，可设置字体、背景、边线、刻度、指针的颜色
-    METER_SPEED,                       	    // 速度指示仪表，可设置字体、背景、边线、刻度、指针的颜色
-}ips200pro_meter_style_enum;	
-	
-typedef enum	
-{	
-    CLOCK_DIGITAL               = 0x01,	    // 数字时钟，可设置字体、背景、边线的颜色
-    CLOCK_ANALOG,                      	    // 指针时钟，可设置字体、背景、边线、刻度、指针的颜色
-}ips200pro_clock_style_enum;	
-	
+    METER_ANGLE                     = 0x01  ,                                   // 角度指示仪表，可设置字体、背景、边线、刻度、指针的颜色
+    METER_SPEED                             ,                                   // 速度指示仪表，可设置字体、背景、边线、刻度、指针的颜色
+}ips200pro_meter_style_enum;
+
+typedef enum
+{
+    CLOCK_DIGITAL                   = 0x01  ,                                   // 数字时钟，可设置字体、背景、边线的颜色
+    CLOCK_ANALOG                            ,                                   // 指针时钟，可设置字体、背景、边线、刻度、指针的颜色
+}ips200pro_clock_style_enum;
+
 // 图像叠加线条 uint8类型的线条结构体
-typedef struct	
-{	
-    uint8 x;                          	    // 点的横坐标
-    uint8 y;                          	    // 点的纵坐标
-}ips200pro_image_line_uint8_struct;	
-	
+typedef struct
+{
+    uint8 x                                 ;                                   // 点的横坐标
+    uint8 y                                 ;                                   // 点的纵坐标
+}ips200pro_image_line_uint8_struct;
+
 // 图像叠加线条 uint16类型的线条结构体
-typedef struct	
-{	
-    uint16 x;                        	    // 点的横坐标
-    uint16 y;                        	    // 点的纵坐标
+typedef struct
+{
+    uint16 x                                ;                                   // 点的横坐标
+    uint16 y                                ;                                   // 点的纵坐标
 }ips200pro_image_line_uint16_struct;
 
 typedef struct
 {
-    uint16  id;                      	    // 屏幕ID编号
-    uint16  width;                   	    // 屏幕最大显示宽度
-    uint16  height;                  	    // 屏幕最大显示高度
-    uint8   version_major;           	    // 固件版本-主版本
-    uint8   version_middle;          	    // 固件版本-中版本
-    uint8   version_micro;           	    // 固件版本-微版本
-}ips200pro_information_struct;	
-	
-typedef struct	
-{	
-    uint16  year;                    	    // 年
-    uint8   month;                   	    // 月
-    uint8   day;                     	    // 日
-    uint8   hour;                    	    // 时
-    uint8   minute;                  	    // 分
-    uint8   second;                  	    // 秒
-    uint8   week;                    	    // 星期
+    uint16  id                              ;                                   // 屏幕ID编号
+    uint16  width                           ;                                   // 屏幕最大显示宽度
+    uint16  height                          ;                                   // 屏幕最大显示高度
+    uint8   version_major                   ;                                   // 固件版本-主版本
+    uint8   version_middle                  ;                                   // 固件版本-中版本
+    uint8   version_micro                   ;                                   // 固件版本-微版本
+}ips200pro_information_struct;
+
+typedef struct
+{
+    uint16  year                            ;                                   // 年
+    uint8   month                           ;                                   // 月
+    uint8   day                             ;                                   // 日
+    uint8   hour                            ;                                   // 时
+    uint8   minute                          ;                                   // 分
+    uint8   second                          ;                                   // 秒
+    uint8   week                            ;                                   // 星期
 }ips200pro_time_struct;
 
 extern ips200pro_information_struct    ips200pro_information;
@@ -225,79 +242,79 @@ extern ips200pro_time_struct           ips200pro_time;
 //------------------------------------功能函数一览表-------------------------------------------
 
 //------------------------------------系统功能函数-------------------------------------------
-// uint8  ips200pro_set_date        		(uint16 year, uint8 month, uint8 day);                                            	 	// 设置系统日期
-// uint8  ips200pro_set_time            	(uint8 hour, uint8 minute, uint8 second);                                            	// 设置系统时间
-// uint8  ips200pro_set_parent          	(uint16 child_id, uint16 parent_id);                                                	// 设置组件父对象
-// uint8  ips200pro_set_format          	(ips200pro_format_enum format);                                                       	// 设置汉字编码格式
-// uint8  ips200pro_set_backlight       	(uint8 backlight);                                                                   	// 设置屏幕背光亮度
-// uint8  ips200pro_set_direction       	(ips200pro_display_direction_enum dir);                                               	// 设置屏幕显示方向
-// uint8  ips200pro_set_default_font    	(ips200pro_font_size_enum font);                                                      	// 设置默认字体大小
+// uint8  ips200pro_set_date                (uint16 year, uint8 month, uint8 day);                                                  // 设置系统日期
+// uint8  ips200pro_set_time                (uint8 hour, uint8 minute, uint8 second);                                               // 设置系统时间
+// uint8  ips200pro_set_parent              (uint16 child_id, uint16 parent_id);                                                    // 设置组件父对象
+// uint8  ips200pro_set_format              (ips200pro_format_enum format);                                                         // 设置汉字编码格式
+// uint8  ips200pro_set_backlight           (uint8 backlight);                                                                      // 设置屏幕背光亮度
+// uint8  ips200pro_set_direction           (ips200pro_display_direction_enum dir);                                                 // 设置屏幕显示方向
+// uint8  ips200pro_set_default_font        (ips200pro_font_size_enum font);                                                        // 设置默认字体大小
 // uint8  ips200pro_set_optimize            (uint8 state)                                                                           // 设置优化（默认是开启的）
-//		
-// uint8  ips200pro_get_date            	(ips200pro_time_struct *time);                                                        	// 获取系统日期
-// uint8  ips200pro_get_time            	(ips200pro_time_struct *time);                                                        	// 获取系统时间
-// uint8  ips200pro_get_information     	(ips200pro_information_struct *information);                                          	// 获取系统信息
-// uint8  ips200pro_get_free_stack_size 	(uint32 *stack_size);                                                                	// 获取系统空闲栈大小
-	
+//
+// uint8  ips200pro_get_date                (ips200pro_time_struct *time);                                                          // 获取系统日期
+// uint8  ips200pro_get_time                (ips200pro_time_struct *time);                                                          // 获取系统时间
+// uint8  ips200pro_get_information         (ips200pro_information_struct *information);                                            // 获取系统信息
+// uint8  ips200pro_get_free_stack_size     (uint32 *stack_size);                                                                   // 获取系统空闲栈大小
+
 //-----------------------------------通用函数接口-------------------------------------------
-// uint8  ips200pro_delete_widgets   	    (uint16 widgets_id);                                                                 	// 删除组件
-// uint8  ips200pro_set_font         	    (uint16 widgets_id, ips200pro_font_size_enum font_size);                              	// 设置组件的字体
-// uint8  ips200pro_set_color        	    (uint16 widgets_id, ips200pro_widgets_color_type_enum color_type, uint16 color);      	// 设置组件颜色
-// uint8  ips200pro_set_position     	    (uint16 widgets_id, int16 x, int16 y);                                               	// 设置组件位置
-// uint8  ips200pro_set_hidden       	    (uint16 widgets_id, uint8 state);                                                    	// 设置组件隐藏
-	
+// uint8  ips200pro_delete_widgets          (uint16 widgets_id);                                                                    // 删除组件
+// uint8  ips200pro_set_font                (uint16 widgets_id, ips200pro_font_size_enum font_size);                                // 设置组件的字体
+// uint8  ips200pro_set_color               (uint16 widgets_id, ips200pro_widgets_color_type_enum color_type, uint16 color);        // 设置组件颜色
+// uint8  ips200pro_set_position            (uint16 widgets_id, int16 x, int16 y);                                                  // 设置组件位置
+// uint8  ips200pro_set_hidden              (uint16 widgets_id, uint8 state);                                                       // 设置组件隐藏
+
 //-----------------------------------PAGE页面操作接口-------------------------------------------
-// uint16 ips200pro_page_create         	(char *str);                                                                         	// 页面创建
-// uint8  ips200pro_page_switch         	(uint16 page_id, ips200pro_page_animations_enum anim_en);                               // 页面切换
-// uint8  ips200pro_page_hidden         	(uint16 page_id, uint8 state)                                                           // 页面隐藏
-// uint8  ips200pro_page_set_title_name 	(uint16 page_id, char *str);                                                            // 页面标题设置
-	
+// uint16 ips200pro_page_create             (char *str);                                                                            // 页面创建
+// uint8  ips200pro_page_switch             (uint16 page_id, ips200pro_page_animations_enum anim_en);                               // 页面切换
+// uint8  ips200pro_page_hidden             (uint16 page_id, uint8 state)                                                           // 页面隐藏
+// uint8  ips200pro_page_set_title_name     (uint16 page_id, char *str);                                                            // 页面标题设置
+
 //-----------------------------------文本标签操作接口-------------------------------------------
-// uint16 ips200pro_label_create       	    (int16 x, int16 y, uint16 width, uint16 height);                                     	// 文本标签创建
-// uint8  ips200pro_label_printf       	    (uint16 label_id, const char *format, ...);                                          	// 文本标签内容设置
+// uint16 ips200pro_label_create            (int16 x, int16 y, uint16 width, uint16 height);                                        // 文本标签创建
+// uint8  ips200pro_label_printf            (uint16 label_id, const char *format, ...);                                             // 文本标签内容设置
 // uint8  ips200pro_label_show_string       (uint16 label_id, const char *str)                                                      // 文本标签字符串显示
-// uint8  ips200pro_label_mode         	    (uint16 label_id, ips200pro_label_mode_enum mode);                                    	// 文本标签模式设置
-	
+// uint8  ips200pro_label_mode              (uint16 label_id, ips200pro_label_mode_enum mode);                                      // 文本标签模式设置
+
 //-----------------------------------表格TABLE操作接口-------------------------------------------
-// uint16 ips200pro_table_create        	(int16 x, int16 y, uint16 row_num, uint16 col_num);                                  	// 表格创建
-// uint8  ips200pro_table_cell_printf   	(uint16 table_id, uint8 row, uint8 col, char *format, ...);                          	// 表格单元格内容设置
-// uint8  ips200pro_table_set_col_width 	(uint16 table_id, uint8 col, uint16 width);                                          	// 表格列宽度设置
-// uint8  ips200pro_table_select        	(uint16 table_id, uint8 row, uint8 col);                                             	// 单元格选中
-	
+// uint16 ips200pro_table_create            (int16 x, int16 y, uint16 row_num, uint16 col_num);                                     // 表格创建
+// uint8  ips200pro_table_cell_printf       (uint16 table_id, uint8 row, uint8 col, char *format, ...);                             // 表格单元格内容设置
+// uint8  ips200pro_table_set_col_width     (uint16 table_id, uint8 col, uint16 width);                                             // 表格列宽度设置
+// uint8  ips200pro_table_select            (uint16 table_id, uint8 row, uint8 col);                                                // 单元格选中
+
 //-----------------------------------仪表指示器操作接口-------------------------------------------
-// uint16 ips200pro_meter_create      	    (int16 x, int16 y, uint16 size, ips200pro_meter_style_enum style);                    	// 仪表创建
-// uint8  ips200pro_meter_set_value   	    (uint16 meter_id, int16 value);                                                      	// 仪表数值设置
-	
+// uint16 ips200pro_meter_create            (int16 x, int16 y, uint16 size, ips200pro_meter_style_enum style);                      // 仪表创建
+// uint8  ips200pro_meter_set_value         (uint16 meter_id, int16 value);                                                         // 仪表数值设置
+
 //-----------------------------------时钟操作接口-------------------------------------------
-// uint16 ips200pro_clock_create      	    (int16 x, int16 y, uint16 clock_size, ips200pro_clock_style_enum clock_type)          	// 时钟创建
-	
+// uint16 ips200pro_clock_create            (int16 x, int16 y, uint16 clock_size, ips200pro_clock_style_enum clock_type)            // 时钟创建
+
 //-----------------------------------进度条操作接口-------------------------------------------
-// uint16 ips200pro_progress_bar_create     (int16 x, int16 y, uint16 width, uint16 height);                                     	// 进度条创建
-// uint8  ips200pro_progress_bar_set_value  (uint16 progress_bar_id, uint8 start_value, uint8 end_value);                        	// 进度条数值设置
-	
+// uint16 ips200pro_progress_bar_create     (int16 x, int16 y, uint16 width, uint16 height);                                        // 进度条创建
+// uint8  ips200pro_progress_bar_set_value  (uint16 progress_bar_id, uint8 start_value, uint8 end_value);                           // 进度条数值设置
+
 //-----------------------------------日历操作接口-------------------------------------------
-// uint16 ips200pro_calendar_create    	    (int16 x, int16 y, uint16 width, uint16 height);                                     	// 日历创建
-// uint8  ips200pro_calendar_display   	    (uint16 year, uint8 month, uint8 ips200pro_calendar_mode_enum);                       	// 日历显示设置
-	
+// uint16 ips200pro_calendar_create         (int16 x, int16 y, uint16 width, uint16 height);                                        // 日历创建
+// uint8  ips200pro_calendar_display        (uint16 year, uint8 month, uint8 ips200pro_calendar_mode_enum);                         // 日历显示设置
+
 //-----------------------------------波形图操作接口-------------------------------------------
-// uint16 ips200pro_waveform_create    	    (int16 x, int16 y, uint16 width, uint16 height);                                     	// 波形图创建
-// uint8  ips200pro_waveform_add_value 	    (uint16 waveform_id, uint8 line_id, const uint16 *data, uint16 length, uint16 color);	// 波形图添加数据
-// uint8  ips200pro_waveform_line_state	    (uint16 waveform_id, uint16 line_id, uint16 line_state);                             	// 波形图线条状态设置
-// uint8  ips200pro_waveform_line_type 	    (uint16 waveform_id, uint8 line_type);                                               	// 波形图线条类型设置
-// uint8  ips200pro_waveform_clear     	    (uint16 waveform_id);                                                                	// 波形图数据清空
+// uint16 ips200pro_waveform_create         (int16 x, int16 y, uint16 width, uint16 height);                                        // 波形图创建
+// uint8  ips200pro_waveform_add_value      (uint16 waveform_id, uint8 line_id, const uint16 *data, uint16 length, uint16 color);   // 波形图添加数据
+// uint8  ips200pro_waveform_line_state     (uint16 waveform_id, uint16 line_id, uint16 line_state);                                // 波形图线条状态设置
+// uint8  ips200pro_waveform_line_type      (uint16 waveform_id, uint8 line_type);                                                  // 波形图线条类型设置
+// uint8  ips200pro_waveform_clear          (uint16 waveform_id);                                                                   // 波形图数据清空
 
 //-----------------------------------图像操作接口-------------------------------------------
-// uint16 ips200pro_image_create        	(int16 x, int16 y, uint16 width, uint16 height);                                        // 图像组件创建
+// uint16 ips200pro_image_create            (int16 x, int16 y, uint16 width, uint16 height);                                        // 图像组件创建
 // uint8  ips200pro_image_display           (image_id, *image, width, height, image_type, threshold);                               // 图像数据更新
 // uint8  ips200pro_image_draw_line         (image_id, line_id, *line_data, line_length, data_type, color);                         // 图像上画线 先发送ips200pro_image_draw_line再发送ips200pro_image_display
 // uint8  ips200pro_image_draw_rectangle    (image_id, rectangle_id, x, y, rectangle_width, rectangle_height, color);               // 图像上画框 先发送ips200pro_image_draw_rectangle再发送ips200pro_image_display
 
 //-----------------------------------容器操作接口-------------------------------------------
-// uint16 ips200pro_container_create    	(int16 x, int16 y, uint16 width, uint16 height);                                     	// 容器组件创建
-// uint8  ips200pro_container_radius    	(uint16 container_id, uint16 border_width, uint16 radius);                           	// 设置容器的边线宽度与圆角半径
+// uint16 ips200pro_container_create        (int16 x, int16 y, uint16 width, uint16 height);                                        // 容器组件创建
+// uint8  ips200pro_container_radius        (uint16 container_id, uint16 border_width, uint16 radius);                              // 设置容器的边线宽度与圆角半径
 
 //-----------------------------------屏幕初始化-------------------------------------------
-// uint16 ips200pro_init               	    (char *str, ips200pro_title_position_enum title_position, uint8 title_size);            // 屏幕初始化
+// uint16 ips200pro_init                    (char *str, ips200pro_title_position_enum title_position, uint8 title_size);            // 屏幕初始化
 
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -308,7 +325,7 @@ extern ips200pro_time_struct           ips200pro_time;
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_date(2024, 10, 31);  // 2024年10月31日
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_set_date           	(uint16 year, uint8 month, uint8 day);
+uint8   ips200pro_set_date              (uint16 year, uint8 month, uint8 day);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置系统时间
@@ -318,7 +335,7 @@ uint8	ips200pro_set_date           	(uint16 year, uint8 month, uint8 day);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_time(13, 19, 15);  // 13点19分15秒
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_time             	(uint8 hour, uint8 minute, uint8 second);
+uint8   ips200pro_set_time              (uint8 hour, uint8 minute, uint8 second);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置组件父对象
@@ -327,7 +344,7 @@ uint8   ips200pro_set_time             	(uint8 hour, uint8 minute, uint8 second)
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_parent(1, label_id, container_id);  // 将label显示到容器上 设置后label的坐标原点为容器的左上角，不再是屏幕的左上角，并且超出容器范围的内容不会进行显示
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_parent          	(uint16 child_id, uint16 parent_id);
+uint8   ips200pro_set_parent            (uint16 child_id, uint16 parent_id);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置中文编码格式
@@ -335,7 +352,7 @@ uint8   ips200pro_set_parent          	(uint16 child_id, uint16 parent_id);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_format(IPS200PRO_FORMAT_GBK);  // 将ID为1的表格显示在ID为2的页面上
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_format          	(ips200pro_format_enum format);
+uint8   ips200pro_set_format            (ips200pro_format_enum format);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置背光亮度
@@ -343,7 +360,7 @@ uint8   ips200pro_set_format          	(ips200pro_format_enum format);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_backlight(100);  // 背光亮度设置为100
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_backlight        	(uint8 backlight);
+uint8   ips200pro_set_backlight         (uint8 backlight);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置屏幕显示方向
@@ -351,7 +368,7 @@ uint8   ips200pro_set_backlight        	(uint8 backlight);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_backlight(100);  // 背光亮度设置为100
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_direction       	(ips200pro_display_direction_enum dir);
+uint8   ips200pro_set_direction         (ips200pro_display_direction_enum dir);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置默认字体大小
@@ -359,7 +376,7 @@ uint8   ips200pro_set_direction       	(ips200pro_display_direction_enum dir);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_default_font(FONT_SIZE_20);  // 将默认字体设置为20号
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_default_font   	(ips200pro_font_size_enum font);
+uint8   ips200pro_set_default_font      (ips200pro_font_size_enum font);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置优化（默认为开启状态）
@@ -377,7 +394,7 @@ uint8   ips200pro_set_optimize           (uint8 state);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_get_date(&ips200pro_time);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_get_date           	(ips200pro_time_struct *time);
+uint8   ips200pro_get_date              (ips200pro_time_struct *time);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     获取系统时间
@@ -385,7 +402,7 @@ uint8   ips200pro_get_date           	(ips200pro_time_struct *time);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_get_time(&ips200pro_time);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_get_time           	(ips200pro_time_struct *time);
+uint8   ips200pro_get_time              (ips200pro_time_struct *time);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     获取空闲栈大小
@@ -393,7 +410,7 @@ uint8   ips200pro_get_time           	(ips200pro_time_struct *time);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_get_information(&ips200pro_information);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_get_information    	(ips200pro_information_struct *information);
+uint8   ips200pro_get_information       (ips200pro_information_struct *information);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     获取系统信息
@@ -401,15 +418,7 @@ uint8   ips200pro_get_information    	(ips200pro_information_struct *information
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_get_free_stack_size(&stack_size);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_get_free_stack_size 	(uint32 *stack_size);
-
-//-------------------------------------------------------------------------------------------------------------------
-// 函数简介     删除组件
-// 参数说明     widgets_id      组件的编号
-// 返回参数     uint8           状态 0：设置成功  1：设置失败
-// 使用示例     ips200pro_delete_widgets(widgets_id);  // 将选中的组件删除
-//-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_delete_widgets     	(uint16 widgets_id);
+uint8   ips200pro_get_free_stack_size   (uint32 *stack_size);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置组件字体大小
@@ -418,7 +427,7 @@ uint8   ips200pro_delete_widgets     	(uint16 widgets_id);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_font(widgets_id, FONT_SIZE_20);  // 将选中的组件字体大小设置为20号
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_font           	(uint16 widgets_id, ips200pro_font_size_enum font_size);
+uint8   ips200pro_set_font              (uint16 widgets_id, ips200pro_font_size_enum font_size);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     组件颜色设置
@@ -428,7 +437,7 @@ uint8   ips200pro_set_font           	(uint16 widgets_id, ips200pro_font_size_en
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_color(widgets_id, COLOR_BORDER, RGB565_RED);  // 将选中的组件边线颜色设置为红色
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_color          	(uint16 widgets_id, ips200pro_widgets_color_type_enum color_type, uint16 color);
+uint8   ips200pro_set_color             (uint16 widgets_id, ips200pro_widgets_color_type_enum color_type, uint16 color);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     组件位置设置
@@ -438,7 +447,7 @@ uint8   ips200pro_set_color          	(uint16 widgets_id, ips200pro_widgets_colo
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_position(widgets_id, 10, 10);  // 将选中的组件起始坐标设置为10,10
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_position        	(uint16 widgets_id, int16 x, int16 y);
+uint8   ips200pro_set_position          (uint16 widgets_id, int16 x, int16 y);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     组件隐藏设置
@@ -447,7 +456,7 @@ uint8   ips200pro_set_position        	(uint16 widgets_id, int16 x, int16 y);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_set_hidden(widgets_id, 1);  // 将选中的组件隐藏显示
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_set_hidden          	(uint16 widgets_id, uint8 state);
+uint8   ips200pro_set_hidden            (uint16 widgets_id, uint8 state);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建页面
@@ -455,7 +464,7 @@ uint8   ips200pro_set_hidden          	(uint16 widgets_id, uint8 state);
 // 返回参数     uint16          状态 0：创建失败  其他：创建成功，同时返回的数值表示此PAGE的ID
 // 使用示例     uint16 page1_id = ips200pro_page_create("Test");  // 创建一个名称为Test的页面
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_page_create         	(char *str);
+uint16  ips200pro_page_create           (char *str);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     切换页面
@@ -464,7 +473,7 @@ uint16	ips200pro_page_create         	(char *str);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_page_switch(page_id, PAGE_ANIM_ON);  // 切换到选中的页面进行显示 开启动画效果
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_page_switch         	(uint16 page_id, ips200pro_page_animations_enum anim_en);
+uint8   ips200pro_page_switch           (uint16 page_id, ips200pro_page_animations_enum anim_en);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     隐藏页面
@@ -474,7 +483,7 @@ uint8   ips200pro_page_switch         	(uint16 page_id, ips200pro_page_animation
 // 使用示例     ips200pro_page_hidden(page_id, 1);  // 将选中的页面隐藏
 // 注意事项     ID设置为0，则表示对所有的页面同时进行设置
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_page_hidden			(uint16 page_id, uint8 state);
+uint8   ips200pro_page_hidden           (uint16 page_id, uint8 state);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置页面名称
@@ -483,7 +492,7 @@ uint8   ips200pro_page_hidden			(uint16 page_id, uint8 state);
 // 返回参数     uint8           状态 0：设置成功  1：设置失败
 // 使用示例     ips200pro_page_set_title_name(page_id, "Test");  // 将选中的页面，名称设置为Test
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_page_set_title_name	(uint16 page_id, char *str);
+uint8   ips200pro_page_set_title_name   (uint16 page_id, char *str);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建文本标签
@@ -494,7 +503,7 @@ uint8   ips200pro_page_set_title_name	(uint16 page_id, char *str);
 // 返回参数     uint16          状态 0：创建失败  其他：创建成功，同时返回的数值表示此PAGE的ID
 // 使用示例     uint16 label_id = ips200pro_label_create(0, 0, 50, 20);  // 创建一个文本标签 左上角坐标0,0 宽度50 高度20
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_label_create     		(int16 x, int16 y, uint16 width, uint16 height);
+uint16  ips200pro_label_create          (int16 x, int16 y, uint16 width, uint16 height);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     文本标签格式化并显示
@@ -504,7 +513,7 @@ uint16	ips200pro_label_create     		(int16 x, int16 y, uint16 width, uint16 heig
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_label_printf(label_id, "tset=%d", test);
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_label_printf			(uint16 label_id, const char *format, ...);
+uint8   ips200pro_label_printf          (uint16 label_id, const char *format, ...);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     文本标签字符串显示
@@ -513,7 +522,7 @@ uint8	ips200pro_label_printf			(uint16 label_id, const char *format, ...);
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_label_show_string(label_id, “This is a test”);
 //-------------------------------------------------------------------------------------------------------------------
-uint8 ips200pro_label_show_string(uint16 label_id, const char *str);
+uint8 ips200pro_label_show_string       (uint16 label_id, const char *str);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置文本标签长文本模式
@@ -522,7 +531,7 @@ uint8 ips200pro_label_show_string(uint16 label_id, const char *str);
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_label_mode(label_id, "tset=%d", test);
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_label_mode          	(uint16 label_id, ips200pro_label_mode_enum mode);
+uint8   ips200pro_label_mode            (uint16 label_id, ips200pro_label_mode_enum mode);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建表格标签
@@ -533,7 +542,7 @@ uint8	ips200pro_label_mode          	(uint16 label_id, ips200pro_label_mode_enum
 // 返回参数     uint16          状态 0：创建失败  其他：创建成功，同时返回的数值表示此PAGE的ID
 // 使用示例     uint16 table2_id = ips200pro_table_create(0, 0, 5, 4);  // 创建5行4列表格 左上角坐标0,0，如需调整宽度使用ips200pro_table_set_col_width函数单独调整
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_table_create        	(int16 x, int16 y, uint16 row_num, uint16 col_num);
+uint16  ips200pro_table_create          (int16 x, int16 y, uint16 row_num, uint16 col_num);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     单元格格式化并显示
@@ -545,7 +554,7 @@ uint16	ips200pro_table_create        	(int16 x, int16 y, uint16 row_num, uint16 
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_label_printf(table_id, 1, 1, "tset=%d", test);  // 格式化字符串，并显示在表格的第一行 第一列（即左上角的单元格）
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_table_cell_printf    	(uint16 table_id, uint8 row, uint8 col, char *format, ...);
+uint8   ips200pro_table_cell_printf     (uint16 table_id, uint8 row, uint8 col, char *format, ...);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置表格列宽度
@@ -555,7 +564,7 @@ uint8	ips200pro_table_cell_printf    	(uint16 table_id, uint8 row, uint8 col, ch
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_table_set_col_width(table_id, 1, 20);  // 将选中的表格 的第一列（即最左侧的一列）宽度设置为20
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_table_set_col_width	(uint16 table_id, uint8 col, uint16 width);
+uint8   ips200pro_table_set_col_width   (uint16 table_id, uint8 col, uint16 width);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     表格选中
@@ -566,7 +575,7 @@ uint8	ips200pro_table_set_col_width	(uint16 table_id, uint8 col, uint16 width);
 // 使用示例     ips200pro_table_select(table_id, 1, 2);  // 将选中的表格 的第一行、第一列（即最左上角）选中
 // 备注说明     选中整列：指定col row设置为0x00  选中整行：指定row col设置为0x00 取消选中row col都设置为0x00
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_table_select        	(uint16 table_id, uint8 row, uint8 col);
+uint8   ips200pro_table_select          (uint16 table_id, uint8 row, uint8 col);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建仪表指示器
@@ -577,16 +586,16 @@ uint8	ips200pro_table_select        	(uint16 table_id, uint8 row, uint8 col);
 // 返回参数     uint16          状态 0：创建失败  其他：创建成功，同时返回的数值表示此PAGE的ID
 // 使用示例     uint16 table2_id = ips200pro_meter_create(0, 0, 60, 1);  // 1：角度指示器 2：速度指示器
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_meter_create        	(int16 x, int16 y, uint16 size, ips200pro_meter_style_enum style);
+uint16  ips200pro_meter_create          (int16 x, int16 y, uint16 size, ips200pro_meter_style_enum style);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     仪表指示器数值设置
 // 参数说明     meter_id        仪表ID
-// 参数说明     value           数值	角度类型数值范围0-360 速度类型设置范围0-100
+// 参数说明     value           数值  角度类型数值范围0-360 速度类型设置范围0-100
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_meter_set_value(meter_id, 50);  // 将选中的仪表数值设置为50
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_meter_set_value     	(uint16 meter_id, int16 value);
+uint8   ips200pro_meter_set_value       (uint16 meter_id, int16 value);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建时钟
@@ -600,7 +609,7 @@ uint8	ips200pro_meter_set_value     	(uint16 meter_id, int16 value);
 // 备注说明     当宽度与高度一致时，时钟为圆形指针时钟，否则为数字时钟
 // 备注说明     如果需要修改时间，使用ips200pro_set_time函数修改
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_clock_create        	(int16 x, int16 y, uint16 clock_size, ips200pro_clock_style_enum clock_type);
+uint16  ips200pro_clock_create          (int16 x, int16 y, uint16 clock_size, ips200pro_clock_style_enum clock_type);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建进度条
@@ -612,7 +621,7 @@ uint16	ips200pro_clock_create        	(int16 x, int16 y, uint16 clock_size, ips2
 // 使用示例     uint16 bar2_id = ips200pro_progress_bar_create(0, 0, 60, 10);  //
 // 备注说明     当宽度与高度一致时，为圆形进度条，否为长条形进度条
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_progress_bar_create  	(int16 x, int16 y, uint16 width, uint16 height);
+uint16  ips200pro_progress_bar_create   (int16 x, int16 y, uint16 width, uint16 height);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     进度条数值设置
@@ -622,7 +631,7 @@ uint16	ips200pro_progress_bar_create  	(int16 x, int16 y, uint16 width, uint16 h
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_progress_bar_set_value(progress_bar_id, 10, 60);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_progress_bar_set_value	(uint16 progress_bar_id, uint8 start_value, uint8 end_value);
+uint8   ips200pro_progress_bar_set_value    (uint16 progress_bar_id, uint8 start_value, uint8 end_value);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建日历
@@ -633,7 +642,7 @@ uint8	ips200pro_progress_bar_set_value	(uint16 progress_bar_id, uint8 start_valu
 // 返回参数     uint16          状态 0：创建失败  其他：创建成功，同时返回的数值表示此PAGE的ID
 // 使用示例     uint16 test_id = ips200pro_calendar_create(0, 0, 200, 200);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_calendar_create     	(int16 x, int16 y, uint16 width, uint16 height);
+uint16  ips200pro_calendar_create       (int16 x, int16 y, uint16 width, uint16 height);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     日历显示设置
@@ -643,7 +652,7 @@ uint16	ips200pro_calendar_create     	(int16 x, int16 y, uint16 width, uint16 he
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_calendar_display(2036, 1, IPS200PRO_CALENDAR_CHINESE);  // 日历显示2036年1月份 中文显示
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_calendar_display		(uint16 year, uint8 month, ips200pro_calendar_mode_enum mode);
+uint8   ips200pro_calendar_display      (uint16 year, uint8 month, ips200pro_calendar_mode_enum mode);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建波形图
@@ -654,7 +663,7 @@ uint8	ips200pro_calendar_display		(uint16 year, uint8 month, ips200pro_calendar_
 // 返回参数     uint16          状态 0：创建失败  其他：创建成功，同时返回的数值表示此PAGE的ID
 // 使用示例     uint16 test_id = ips200pro_waveform_create(0, 0, 200, 200);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_waveform_create     	(int16 x, int16 y, uint16 width, uint16 height);
+uint16  ips200pro_waveform_create       (int16 x, int16 y, uint16 width, uint16 height);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     波形图添加点
@@ -667,7 +676,7 @@ uint16	ips200pro_waveform_create     	(int16 x, int16 y, uint16 width, uint16 he
 // 使用示例     ips200pro_waveform_add_value(1, 1, &point[0], 10, RGB565_RED);  //
 // 备注说明     波形图显示的点数量上限为组件宽度，当收到的点数量超过组件宽度时优先显示最近收到的点数据
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_waveform_add_value   	(uint16 waveform_id, uint8 line_id, const uint16 *data, uint16 length, uint16 color);
+uint8   ips200pro_waveform_add_value    (uint16 waveform_id, uint8 line_id, const uint16 *data, uint16 length, uint16 color);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置波形图线条状态
@@ -677,7 +686,7 @@ uint8	ips200pro_waveform_add_value   	(uint16 waveform_id, uint8 line_id, const 
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_waveform_line_state(waveform_id, 1, 0);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_waveform_line_state  	(uint16 waveform_id, uint16 line_id, uint16 line_state);
+uint8   ips200pro_waveform_line_state   (uint16 waveform_id, uint16 line_id, uint16 line_state);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置波形图线条类型
@@ -686,7 +695,7 @@ uint8	ips200pro_waveform_line_state  	(uint16 waveform_id, uint16 line_id, uint1
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_waveform_line_type(waveform_id, 0);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_waveform_line_type   	(uint16 waveform_id, uint8 line_type);
+uint8   ips200pro_waveform_line_type    (uint16 waveform_id, uint8 line_type);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     波形图清除数据（即清空显示）
@@ -694,7 +703,7 @@ uint8	ips200pro_waveform_line_type   	(uint16 waveform_id, uint8 line_type);
 // 返回参数     uint8           状态 0：成功  1：失败
 // 使用示例     ips200pro_waveform_clear(waveform_id);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_waveform_clear     	(uint16 waveform_id);
+uint8   ips200pro_waveform_clear        (uint16 waveform_id);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建图像组件
@@ -705,7 +714,7 @@ uint8   ips200pro_waveform_clear     	(uint16 waveform_id);
 // 返回参数     uint16          状态 0：创建失败  其他：创建成功，同时返回的数值表示此PAGE的ID
 // 使用示例     uint16 test_id = ips200pro_image_create(0, 0, 188, 120);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_image_create        	(int16 x, int16 y, uint16 width, uint16 height);
+uint16  ips200pro_image_create          (int16 x, int16 y, uint16 width, uint16 height);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     图像显示
@@ -719,7 +728,7 @@ uint16	ips200pro_image_create        	(int16 x, int16 y, uint16 width, uint16 he
 // 使用示例     ips200pro_image_display(image_id, mt9v03x_image[0], 188, 120, IMAGE_GRAYSCALE, 0);  //
 // 备注说明     如果图像宽度、高度与组件的宽度、高度不一致，则会自动缩放，但是缩放会导致屏幕性能下降，从而可能导致显示帧率下降
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_image_display      	(uint16 image_id, const void *image, uint16 width, uint16 height, ips200pro_image_type_enum image_type, uint8 threshold);
+uint8   ips200pro_image_display         (uint16 image_id, const void *image, uint16 width, uint16 height, ips200pro_image_type_enum image_type, uint8 threshold);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     图像叠加线条
@@ -733,7 +742,7 @@ uint8	ips200pro_image_display      	(uint16 image_id, const void *image, uint16 
 // 使用示例     ips200pro_image_draw_line(image_id, 1, line, 120, IMAGE_LINE_TYPE_UINT8, RGB565_RED);  //
 // 备注说明     务必在ips200pro_image_display调用函数之前 调用本函数才能实现线条叠加显示
 //-------------------------------------------------------------------------------------------------------------------
-uint8   ips200pro_image_draw_line     	(uint16 image_id, uint8 line_id, void *line_data, uint16 line_length, ips200pro_image_line_type_enum data_type, uint16 color);
+uint8   ips200pro_image_draw_line       (uint16 image_id, uint8 line_id, void *line_data, uint16 line_length, ips200pro_image_line_type_enum data_type, uint16 color);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     图像叠加矩形框
@@ -748,7 +757,7 @@ uint8   ips200pro_image_draw_line     	(uint16 image_id, uint8 line_id, void *li
 // 使用示例     ips200pro_image_draw_rectangle(image_id, 1, 10, 10, 20, 30, RGB565_RED);  //
 // 备注说明     务必在ips200pro_image_display调用函数之前 调用本函数才能实现矩形框叠加显示
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_image_draw_rectangle	(uint16 image_id, uint8 rectangle_id, int16 x, int16 y, uint16 rectangle_width, uint16 rectangle_height, uint16 color);
+uint8   ips200pro_image_draw_rectangle  (uint16 image_id, uint8 rectangle_id, int16 x, int16 y, uint16 rectangle_width, uint16 rectangle_height, uint16 color);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     创建容器组件
@@ -759,7 +768,7 @@ uint8	ips200pro_image_draw_rectangle	(uint16 image_id, uint8 rectangle_id, int16
 // 返回参数     uint16          状态 0：创建失败  其他：创建成功，同时返回的数值表示此PAGE的ID
 // 使用示例     uint16 test_id = ips200pro_container_create(0, 0, 60, 60);  //
 //-------------------------------------------------------------------------------------------------------------------
-uint16	ips200pro_container_create		(int16 x, int16 y, uint16 width, uint16 height);
+uint16  ips200pro_container_create      (int16 x, int16 y, uint16 width, uint16 height);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     设置容器圆角半径
@@ -770,7 +779,7 @@ uint16	ips200pro_container_create		(int16 x, int16 y, uint16 width, uint16 heigh
 // 使用示例     ips200pro_container_radius(container_id, 1, 10);  // 将选择的容器 线条宽度设置为1，圆角半径设置为10
 // 注意事项     如果容器为宽度高度相同，圆角半径是高度的一半，则最终容易为圆形
 //-------------------------------------------------------------------------------------------------------------------
-uint8	ips200pro_container_radius		(uint16 container_id, uint16 border_width, uint16 radius);
+uint8   ips200pro_container_radius      (uint16 container_id, uint16 border_width, uint16 radius);
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     屏幕初始化
@@ -780,9 +789,8 @@ uint8	ips200pro_container_radius		(uint16 container_id, uint16 border_width, uin
 // 返回参数     uint16          页面ID
 // 使用示例     ips200pro_init("测试", IPS200PRO_TITLE_BOTTOM, 30);  // 初始化屏幕并创建一个标题为测试的页面、标题显示在底部、标题宽度为30
 //-------------------------------------------------------------------------------------------------------------------
-uint16  ips200pro_init					(char *str, ips200pro_title_position_enum title_position, uint8 title_size);
+uint16  ips200pro_init                  (char *str, ips200pro_title_position_enum title_position, uint8 title_size);
 
 
 
 #endif
-
