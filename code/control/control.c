@@ -175,7 +175,7 @@ float Gyro_x_Loop_Kd = 0.5f;
 //float Gyro_x_Loop_Kd = 0.5f;
 void Gyro_x_PID_Controller(float Pitch_Loop_Out)
 {
-    Gyro_x_Loop_error = Gyro_x - Pitch_Loop_Out ;
+    Gyro_x_Loop_error = Gyro - Pitch_Loop_Out ;
     ctrl_pwm_out->steering_pwm_delta =(Gyro_x_Loop_Kp * Gyro_x_Loop_error + Gyro_x_Loop_Kd * (Gyro_x_Loop_error - Gyro_x_Loop_error0));
     ctrl_pwm_out->steering_pwm_out = (steering_middle + ctrl_pwm_out->steering_pwm_delta);
     Gyro_x_Loop_error0 = Gyro_x_Loop_error;
@@ -199,7 +199,7 @@ float Steering_Loop_kd=0;
 float Steering_u=0.0f;
 void Steering_Loop_Controller(float Target_Yaw)
 {
-    Steering_Loop_error=imu_temp->yaw_integral-Target_Yaw;
+    Steering_Loop_error=Yaw-Target_Yaw;
 
     //对误差限幅
     if(Steering_Loop_error>190)
@@ -431,54 +431,15 @@ void pwm_out(void)
     small_driver_set_duty(-ctrl_pwm_out->motor_pwm_out,-ctrl_pwm_out->motor_pwm_out);
     //small_driver_set_duty(0, 0);
     //pwm_set_duty(steering_pwm, 560);
-    //倾倒判断
-    if(Pitch>28||Pitch<-28)
-    {
-        pwm_set_duty(steering_pwm, steering_middle);
-        small_driver_set_duty(0, 0);
-    }
-
-}
-
-////------------------------------------------------------------------------------
-//// 函数简介     pwm输出(原地)
-//// 参数说明     无
-//// 返回参数     无
-//// 备注信息     v1.0
-////------------------------------------------------------------------------------
-//uint8_t time=0;
-//void pwm_out_yuan(void)
-//{
-//    // 舵机输出
-//    pwm_set_duty(steering_pwm, ctrl_pwm_out->steering_pwm_out);
-//
-//    //电机输出
-//
-//    if(time<=20)
-//    {
-//        small_driver_set_duty(-ctrl_pwm_out->motor_pwm_out,-ctrl_pwm_out->motor_pwm_out);
-//        time++;
-//    }
-//    if(time>20&&time<=40)
-//    {
-//        small_driver_set_duty(ctrl_pwm_out->motor_pwm_out,ctrl_pwm_out->motor_pwm_out);
-//        time++;
-//    }
-//    if(time>40)
-//    {
-//        time =0;
-//    }
-//
-//
-//
 //    //倾倒判断
 //    if(Pitch>28||Pitch<-28)
 //    {
 //        pwm_set_duty(steering_pwm, steering_middle);
 //        small_driver_set_duty(0, 0);
 //    }
-//
-//}
+
+}
+
 
 uint8_t  ptemp=0.0f;
 void pitch_pid_cnt(void)
@@ -529,7 +490,7 @@ void subject1(void)
     {
         yaw_target = 180;
     }
-//    if((imu_temp->yaw_integral>175||imu_temp->yaw_integral<-175) && kemu1==road_circle)//判断转弯结束
+//    if((Yaw>175|| Yaw<-175) && kemu1==road_circle)//判断转弯结束
 //    {
 //        kemu1= road2;
 //        ctrl_temp->lucheng=0;
@@ -554,8 +515,8 @@ void subject1(void)
 float pos_now[2]={0};//(x,y)
 void get_pos(void)
 {
-    pos_now[0] = pos_now[0] + (float)(1.0f * ctrl_temp->encoder_count)*sin(imu_temp->yaw_integral*(3.14/180));
-    pos_now[1] = pos_now[1] + (float)(1.0f * ctrl_temp->encoder_count)*cos(imu_temp->yaw_integral*(3.14/180));
+    pos_now[0] = pos_now[0] + (float)(1.0f * ctrl_temp->encoder_count)*sin(Yaw *(3.14/180));
+    pos_now[1] = pos_now[1] + (float)(1.0f * ctrl_temp->encoder_count)*cos(Yaw *(3.14/180));
 }
 
 //------------------------------------------------------------------------------
@@ -630,11 +591,14 @@ float Follow_path(int *last_idx)
     // 计算目标角度误差 alpha
     float target_x = path[target_idx][0];
     float target_y = path[target_idx][1];
-    float alpha = atan2f(target_x - pos_now[0], target_y - pos_now[1]) - imu_temp->yaw_integral;
+    float alpha = atan2f(target_x - pos_now[0], target_y - pos_now[1]) - Yaw;
 
     //角度归一化
     while (alpha > PI)  alpha -= 2 * PI;
     while (alpha < -PI) alpha += 2 * PI;
+
+    //换成角度制
+    alpha = alpha*180 / PI;
 
     return alpha;//返回目标yaw角
 

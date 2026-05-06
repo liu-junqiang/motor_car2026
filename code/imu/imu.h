@@ -27,18 +27,21 @@ typedef struct
 
 extern inertial_measurement_unit_temp_struct* imu_temp;
 extern inertial_measurement_unit_parameters_struct* imu_parameters;
+extern float Gyro;
 extern float Pitch;
-extern float Gyro_x;
-extern float Q_angle;
-extern float Q_gyro ;
-extern float R_angle;
-extern float zhou;
-
+extern float Yaw;
+//extern float Pitch;
+//extern float Gyro_x;
+//extern float Q_angle;
+//extern float Q_gyro ;
+//extern float R_angle;
+//extern float zhou;
 
 void gesture_systematic_error_calc(void);
-void yaw_integral_calc(void);
-void yaw_integral_handle_calc(void);
-void Euler(void);
-void Kalman_Filter_X(float Accel, float Gyro);
+void imu_get(void);
+//void yaw_integral_calc(void);
+//void yaw_integral_handle_calc(void);
+//void Euler(void);
+//void Kalman_Filter_X(float Accel, float Gyro);
 
 #endif /* CODE_IMU_IMU_H_ */

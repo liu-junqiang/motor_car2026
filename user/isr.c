@@ -61,9 +61,9 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
     //subject1();
 
     //Pitch_PID_Controller(0);
-    pdk_pid_cnt();
-    pitch_pid_cnt();
-    Gyro_x_PID_Controller(Pitch_u);
+//    pdk_pid_cnt();
+//    pitch_pid_cnt();
+//    Gyro_x_PID_Controller(Pitch_u);
     //Gyro_x_PID_Controller(0);
     // pwm输出
     pwm_out();
@@ -75,11 +75,12 @@ IFX_INTERRUPT(cc60_pit_ch1_isr, 0, CCU6_0_CH1_ISR_PRIORITY)
     interrupt_global_enable(0);                     // 开启中断嵌套
     pit_clear_flag(CCU60_CH1);
     // 2ms
-//    // 积分获取偏航角
-    yaw_integral_calc();
-//    // 偏航角限幅（-360° ~ 360°）
-    yaw_integral_handle_calc();
-    Euler();//卡尔曼滤波
+    imu_get();
+////    // 积分获取偏航角
+//    yaw_integral_calc();
+////    // 偏航角限幅（-360° ~ 360°）
+//    yaw_integral_handle_calc();
+//    Euler();//卡尔曼滤波
 }
 
 IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
@@ -113,7 +114,7 @@ IFX_INTERRUPT(exti_ch0_ch4_isr, 0, EXTI_CH0_CH4_INT_PRIO)
     if(exti_flag_get(ERU_CH0_REQ0_P15_4))           // 通道0中断
     {
         exti_flag_clear(ERU_CH0_REQ0_P15_4);
-
+        imu660rc_callback();
     }
 
     if(exti_flag_get(ERU_CH4_REQ13_P15_5))          // 通道4中断

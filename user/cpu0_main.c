@@ -60,12 +60,12 @@ int core0_main(void)
     {
         seekfree_assistant_control();
         ips200_show_float(0, 0, Pitch, 3, 3);
-        ips200_show_float(0, 20, Gyro_x, 3, 3);
+        ips200_show_float(0, 20, Gyro, 3, 3);
         ips200_show_int(0,40, ctrl_pwm_out->steering_pwm_out,3);
         ips200_show_int(0,60,  ctrl_pwm_out->steering_pwm_delta,3);
         ips200_show_float(0, 80, Pitch_u, 3, 3);
         ips200_show_int(0, 100, ctrl_temp->lucheng, 6);
-        ips200_show_int(0, 120, imu_temp->yaw_integral, 6);
+        ips200_show_int(0, 120, Yaw, 6);
 
 //       screen_show();
 

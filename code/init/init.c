@@ -46,7 +46,7 @@ void servo_init(void)
 void imu_init(void)
 {
     ips200_show_string(0, 16*5, "imu");
-    while(imu660ra_init());
+    while(imu660rc_init(IMU660RC_QUARTERNION_120HZ));
     ips200_show_string(16*11, 16*5, "success");
 }
 
@@ -143,9 +143,9 @@ void control_speed_struct_init(void)
     ctrl_speed->close_speed_cross = 0;
     ctrl_speed->close_speed_island = 0;
 
-    ctrl_speed->open_speed_straight = 2000;
+    //ctrl_speed->open_speed_straight = 2000;
     //ctrl_speed->open_speed_straight = 1000;
-    //ctrl_speed->open_speed_straight = 0;
+    ctrl_speed->open_speed_straight = 0;
     ctrl_speed->open_speed_cross = 0;
     ctrl_speed->open_speed_island = 0;
 
