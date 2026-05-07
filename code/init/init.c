@@ -144,8 +144,8 @@ void control_speed_struct_init(void)
     ctrl_speed->close_speed_island = 0;
 
     //ctrl_speed->open_speed_straight = 2000;
-    //ctrl_speed->open_speed_straight = 1000;
-    ctrl_speed->open_speed_straight = 0;
+    ctrl_speed->open_speed_straight = 1000;
+//    ctrl_speed->open_speed_straight = 0;
     ctrl_speed->open_speed_cross = 0;
     ctrl_speed->open_speed_island = 0;
 

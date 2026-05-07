@@ -142,8 +142,8 @@ void motor_pid_calc(void)
 //------------------------------------------------------------------------------
 float Pitch_Loop_error = 0.0f;//倾角误差
 float Pitch_Loop_error0 = 0.0f;//上次误差
-float Pitch_Loop_Kp = 16.3f;
-float Pitch_Loop_Kd = 1.5f;
+float Pitch_Loop_Kp = 25.3f;
+float Pitch_Loop_Kd = 4.5f;
 float Pitch_u = 0.0f;//期望角速度
 
 //float Pitch_Loop_error = 0.0f;//倾角误差
@@ -166,8 +166,8 @@ void Pitch_PID_Controller(float Error_Loop_Out)
 //------------------------------------------------------------------------------
 float Gyro_x_Loop_error = 0.0f;
 float Gyro_x_Loop_error0 = 0.0f;//上次误差
-float Gyro_x_Loop_Kp = 2.0f;
-float Gyro_x_Loop_Kd = 0.5f;
+float Gyro_x_Loop_Kp = 3.0f;
+float Gyro_x_Loop_Kd = 1.7f;
 
 //float Gyro_x_Loop_error = 0.0f;
 //float Gyro_x_Loop_error0 = 0.0f;//上次误差
@@ -194,21 +194,31 @@ void Gyro_x_PID_Controller(float Pitch_Loop_Out)
 //------------------------------------------------------------------------------
 float Steering_Loop_error=0.0f;
 float Steering_Loop_error0=0.0f;
-float Steering_Loop_kp=0.3f;
+float Steering_Loop_kp=0.2f;
 float Steering_Loop_kd=0;
 float Steering_u=0.0f;
+int gu = 30;
 void Steering_Loop_Controller(float Target_Yaw)
 {
     Steering_Loop_error=Yaw-Target_Yaw;
 
     //对误差限幅
-    if(Steering_Loop_error>190)
+    if(Steering_Loop_error>200)
     {
-        Steering_Loop_error = 360- Steering_Loop_error;
+        Steering_Loop_error = -360+ Steering_Loop_error;
     }
-    if(Steering_Loop_error<-190)
+    if(Steering_Loop_error<-200)
     {
         Steering_Loop_error = 360+ Steering_Loop_error;
+    }
+    //累计转向
+    if(Steering_Loop_error>=gu)
+    {
+        Steering_Loop_error=gu;
+    }
+    if(Steering_Loop_error<=-gu)
+    {
+        Steering_Loop_error=-gu;
     }
 
     Steering_u=-(Steering_Loop_kp*Steering_Loop_error+
@@ -217,10 +227,10 @@ void Steering_Loop_Controller(float Target_Yaw)
     Steering_Loop_error0=Steering_Loop_error;
 
     if( Steering_u> 20.0f)
-       Steering_u=3.0f;
+       Steering_u=20.0f;
 
    else if(Steering_u<-20.0f)
-       Steering_u=-3.0f;
+       Steering_u=-20.0f;
 }
 
 //------------------------------------------------------------------------------
@@ -449,6 +459,7 @@ void pitch_pid_cnt(void)
     {
         ptemp=0;
         Pitch_PID_Controller(Steering_u);
+//        Pitch_PID_Controller(0);
     }
 
 }
@@ -456,11 +467,11 @@ uint8_t  ptemp2=0.0f;
 void pdk_pid_cnt(void)
 {
     ptemp2++;
-    if(ptemp2==10)
+    if(ptemp2==6)
     {
         ptemp2=0;
-        //Steering_Loop_Controller(yaw_target);
-        Steering_Loop_Controller(0);
+        Steering_Loop_Controller(yaw_target);
+        //Steering_Loop_Controller(0);
     }
 
 }
@@ -473,7 +484,7 @@ void pdk_pid_cnt(void)
 //------------------------------------------------------------------------------
 enum sub1 kemu1=road1;
 //uint64 sub1_sim=989580; //跑直线路程的脉冲数 20m
-uint64 sub1_sim=300000;
+uint64 sub1_sim=90000;
 void subject1(void)
 {
     if(kemu1==road1)

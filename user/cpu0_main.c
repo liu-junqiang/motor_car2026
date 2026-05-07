@@ -67,6 +67,8 @@ int core0_main(void)
         ips200_show_int(0, 100, ctrl_temp->lucheng, 6);
         ips200_show_int(0, 120, Yaw, 6);
 
+        subject1();
+
 //       screen_show();
 
     }

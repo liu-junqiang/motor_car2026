@@ -44,7 +44,7 @@ void seekfree_assistant_parameter_control(void)
         {
 
             seekfree_assistant_parameter_update_flag[i] = 0;
-            seekfree_assistant_parameter_update_flag[i] = 0;
+//            seekfree_assistant_parameter_update_flag[i] = 0;
 //            Q_angle = seekfree_assistant_parameter[0];
 //            Q_gyro = seekfree_assistant_parameter[1];
 //            R_angle = seekfree_assistant_parameter[2];
