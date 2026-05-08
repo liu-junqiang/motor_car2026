@@ -25,7 +25,7 @@ void seekfree_assistant_oscilloscope_show_data(void)
 //    seekfree_assistant_oscilloscope_data.data[4] = (float)Q_gyro;
 //    seekfree_assistant_oscilloscope_data.data[5] = (float)R_angle;
     seekfree_assistant_oscilloscope_data.data[6] = (float)ctrl_pwm_out->motor_pwm_out;
-    seekfree_assistant_oscilloscope_data.data[7] = (float)Steering_u;//舵机输出值
+    seekfree_assistant_oscilloscope_data.data[7] = (float)Yaw;//舵机输出值
 
 }
 

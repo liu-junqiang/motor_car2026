@@ -197,28 +197,32 @@ float Steering_Loop_error0=0.0f;
 float Steering_Loop_kp=0.2f;
 float Steering_Loop_kd=0;
 float Steering_u=0.0f;
-int gu = 30;
+static float steer_accum=0;//累计误差
+float step = 10.0f;//步进值
 void Steering_Loop_Controller(float Target_Yaw)
 {
-    Steering_Loop_error=Yaw-Target_Yaw;
+    //累计误差
+    if(Target_Yaw > steer_accum)
+    {
+        steer_accum += step;
+        if(steer_accum > Target_Yaw) steer_accum = Target_Yaw;
+    }
+    else if(Target_Yaw < steer_accum)
+    {
+        steer_accum -= step;
+        if(steer_accum < Target_Yaw) steer_accum = Target_Yaw;
+    }
 
-    //对误差限幅
-    if(Steering_Loop_error>200)
+    Steering_Loop_error = Yaw - steer_accum;
+
+    //反向误差转换
+    if(Steering_Loop_error>280)
     {
         Steering_Loop_error = -360+ Steering_Loop_error;
     }
-    if(Steering_Loop_error<-200)
+    if(Steering_Loop_error<-280)
     {
         Steering_Loop_error = 360+ Steering_Loop_error;
-    }
-    //累计转向
-    if(Steering_Loop_error>=gu)
-    {
-        Steering_Loop_error=gu;
-    }
-    if(Steering_Loop_error<=-gu)
-    {
-        Steering_Loop_error=-gu;
     }
 
     Steering_u=-(Steering_Loop_kp*Steering_Loop_error+
@@ -226,11 +230,6 @@ void Steering_Loop_Controller(float Target_Yaw)
 
     Steering_Loop_error0=Steering_Loop_error;
 
-    if( Steering_u> 20.0f)
-       Steering_u=20.0f;
-
-   else if(Steering_u<-20.0f)
-       Steering_u=-20.0f;
 }
 
 //------------------------------------------------------------------------------
@@ -484,7 +483,7 @@ void pdk_pid_cnt(void)
 //------------------------------------------------------------------------------
 enum sub1 kemu1=road1;
 //uint64 sub1_sim=989580; //跑直线路程的脉冲数 20m
-uint64 sub1_sim=90000;
+uint64 sub1_sim=150000;
 void subject1(void)
 {
     if(kemu1==road1)
@@ -499,21 +498,21 @@ void subject1(void)
     }
     if(kemu1==road_circle)
     {
-        yaw_target = 180;
+        yaw_target = 190;
     }
-//    if((Yaw>175|| Yaw<-175) && kemu1==road_circle)//判断转弯结束
-//    {
-//        kemu1= road2;
-//        ctrl_temp->lucheng=0;
-//    }
-//    if(kemu1==road2)
-//    {
-//        yaw_target = 180;
-//    }
-//    if(kemu1==road2 && ctrl_temp->lucheng >=sub1_sim) //科目一结束
-//    {
-//        ctrl_speed->open_speed_straight = 0;
-//    }
+    if((Yaw>175|| Yaw<-175) && kemu1==road_circle)//判断转弯结束
+    {
+        kemu1= road2;
+        ctrl_temp->lucheng=0;
+    }
+    if(kemu1==road2)
+    {
+        yaw_target = 190;
+    }
+    if(kemu1==road2 && ctrl_temp->lucheng >=sub1_sim) //科目一结束
+    {
+        ctrl_speed->open_speed_straight = 0;
+    }
 
 }
 
